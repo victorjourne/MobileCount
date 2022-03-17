@@ -70,3 +70,15 @@ class CrowdCounter(nn.Module):
         density_map = self.CCN(img)                    
         return density_map
 
+    def compute_lc_loss(self, output, target, sizes=(4,)):
+        criterion_L1 = torch.nn.L1Loss(reduction='mean') # Mean over batch dim
+        lc_loss = None
+        for s in sizes:
+            pool = torch.nn.AdaptiveAvgPool2d(s)
+            est = pool(output)
+            gt = pool(target)
+            if lc_loss:
+                lc_loss += criterion_L1(est, gt) / s**2
+            else:
+                lc_loss = criterion_L1(est, gt) / s**2
+        return lc_loss
