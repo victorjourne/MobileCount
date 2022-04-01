@@ -45,7 +45,10 @@ __C_DYN.LOG_PARA = 2550.
 # Negative value lead not to take in account those transforms
 __C_DYN.RANDOM_DOWNOVER_SAMPLING = -1
 __C_DYN.RANDOM_DOWN_SAMPLING = -1
-__C_DYN.BRIGHTNESS_JITTER = [0.1, 0.2, 0.3, 0.4, 0.5]
+__C_DYN.BRIGHTNESS_JITTER = 0.
+__C_DYN.CONTRAST_JITTER = 0.
+__C_DYN.SATURATION_JITTER = 0.
+__C_DYN.HUE_JITTER = 0.
 
 __C_DYN.RESUME_MODEL = '/data/models'
 __C_DYN.TRAIN_BATCH_SIZE = 16

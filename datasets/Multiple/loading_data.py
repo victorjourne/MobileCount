@@ -29,14 +29,13 @@ def loading_data():
         #own_transforms.RandomDownSampling(cfg_data.RANDOM_DOWN_SAMPLING),
         own_transforms.RandomHorizontallyFlip()
     ])
-    
+
     train_main_transform_WE = own_transforms.Compose([
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
-        own_transforms.ColorJitter(0.3),
-        # own_transforms.ColorJitter([0.1, 0.2, 0.3, 0.4, 0.5]),
+        own_transforms.ColorJitter(brightness=0.3),
         own_transforms.RandomHorizontallyFlip()
     ])
-    
+
     train_main_transform_GCC = own_transforms.Compose([
         own_transforms.ColorJitter(0.3),
         own_transforms.RandomHorizontallyFlip()

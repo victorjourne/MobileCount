@@ -9,7 +9,7 @@ import torch
 
 def add_margin(pil_img, new_width, new_height, left, top, color):
     result = Image.new(pil_img.mode, (new_width, new_height), color)
-    result.paste(pil_img, (left, top))
+    result.paste(pil_img,(left, top))
     return result
 
 def resize_target(pil_img, tw, th):
@@ -53,7 +53,7 @@ class RandomCrop(object):
         else:
             self.size = size
         self.padding = padding
-        self.mean = (115, 114, 110)#(tuple([int(i*255) for i in cfg.MEAN_STD[0]]))
+        self.mean = (0,0,0)#(115, 114, 110)#(tuple([int(i*255) for i in cfg.MEAN_STD[0]]))
 
     def __call__(self, img, mask):
         if self.padding > 0:
@@ -197,14 +197,24 @@ class RandomContrast(object):
         return img_output, mask
 
 class ColorJitter(object):
-    def __init__(self, brightness=0.):
+    def __init__(self, brightness=0., contrast=0., saturation=0., hue=0.,):
         self.brightness = brightness
-    
+        self.contrast = contrast
+        self.saturation = saturation
+        self.hue = hue
+        action = True
+        if (isinstance(self.brightness,float) and self.brightness == 0.) and
+        (isinstance(self.contrast,float) and self.contrast == 0.) and
+        (isinstance(self.saturation,float) and self.saturation == 0.) and
+        (isinstance(self.hue,float) and self.hue == 0.)
+            action = False
+
     def __call__(self, img, mask):
-        if self.brightness <= 0. or random.random() > 0.5:
+        
+        if not action or random.random() > 0.5:
             return img, mask
         
-        img = standard_transforms.ColorJitter(brightness=self.brightness)(img)
+        img = standard_transforms.ColorJitter(brightness=self.brightness, contrast=self.contrast, saturation=self.saturation, hue=self.hue)(img)
 
         return img,  mask
     
