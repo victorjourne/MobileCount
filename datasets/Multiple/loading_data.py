@@ -14,25 +14,24 @@ def loading_data():
     cl = CollateFN(cfg_data.TRAIN_SIZE)
     collate = cl.collate if cfg_data.COLLATE_FN and cfg_data.TRAIN_BATCH_SIZE != 1 else None
     
-    # add here specific func : 
-    # choose differents combinaison of transformations for each dataset
-    
+    # Add here specific transform func : 
+    # Choose differents combinaison of transformations for each dataset
+  
     train_main_transform_SHHA = own_transforms.Compose([
         own_transforms.ColorJitter(0.3),
         own_transforms.RandomHorizontallyFlip()
     ])
     
     train_main_transform_SHHB = own_transforms.Compose([
-        own_transforms.ColorJitter(cfg_data.BRIGHTNESS_JITTER),
+        own_transforms.RandomDownOverSampling(4),
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
-        own_transforms.RandomDownOverSampling(cfg_data.RANDOM_DOWNOVER_SAMPLING),
-        #own_transforms.RandomDownSampling(cfg_data.RANDOM_DOWN_SAMPLING),
         own_transforms.RandomHorizontallyFlip()
     ])
 
     train_main_transform_WE = own_transforms.Compose([
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.3),
+        #own_transforms.ColorJitter(brightness=0.5),
         own_transforms.RandomHorizontallyFlip()
     ])
 
@@ -90,12 +89,13 @@ def loading_data():
                               gt_transform=gt_transform,
                               image_size=cfg_data.IMAGE_SIZE,
                               **cfg_data.PATH_SETTINGS)
-
-    val_loader = DataLoader(val_set, 
-                            batch_size=cfg_data.VAL_BATCH_SIZE, 
-                            num_workers=8, 
-                            shuffle=True, 
-                            drop_last=False)
+    val_loader = None
+    if len(val_set)>0:
+        val_loader = DataLoader(val_set, 
+                                batch_size=cfg_data.VAL_BATCH_SIZE, 
+                                num_workers=8, 
+                                shuffle=True, 
+                                drop_last=False)
 
     return train_loader, val_loader, restore_transform
 

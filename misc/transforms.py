@@ -202,16 +202,14 @@ class ColorJitter(object):
         self.contrast = contrast
         self.saturation = saturation
         self.hue = hue
-        action = True
-        if (isinstance(self.brightness,float) and self.brightness == 0.) and
-        (isinstance(self.contrast,float) and self.contrast == 0.) and
-        (isinstance(self.saturation,float) and self.saturation == 0.) and
-        (isinstance(self.hue,float) and self.hue == 0.)
-            action = False
+        self.action = True
+        if (isinstance(self.brightness,float) and self.brightness == 0.) and (isinstance(self.contrast,float) and self.contrast == 0.) \
+        and (isinstance(self.saturation,float) and self.saturation == 0.) and (isinstance(self.hue,float) and self.hue == 0.):
+            self.action = False
 
     def __call__(self, img, mask):
         
-        if not action or random.random() > 0.5:
+        if not self.action or random.random() > 0.5:
             return img, mask
         
         img = standard_transforms.ColorJitter(brightness=self.brightness, contrast=self.contrast, saturation=self.saturation, hue=self.hue)(img)

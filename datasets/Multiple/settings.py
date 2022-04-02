@@ -10,7 +10,7 @@ cfg_data = __C_DYN
 __C_DYN.IMAGE_SIZE = None
 __C_DYN.TRAIN_SIZE = (576, 768) # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding
 __C_DYN.LIST_C_DATASETS = [  
-    # (CustomGCC, '/workspace/data/GCC'),
+    #(CustomGCC, '/workspace/data/GCC'),
     #(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
     #(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
     (CustomWE, '/workspace/data/worldExpo10_blurred'),
@@ -24,6 +24,7 @@ __C_DYN.LIST_C_DATASETS = [
 # __C_DYN.MEAN_STD = ([0.3220204, 0.31172827, 0.2942992], [0.23350126, 0.21823345, 0.19834155]) # SHHA+SHHB+GCC+BKG
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG
 # __C_DYN.MEAN_STD = ([0.48884395, 0.49083662, 0.4843851], [0.22677577, 0.22714858, 0.22938044]) # SHHA+SHHB+WE+BKG
+# __C_DYN.MEAN_STD = ([2.773511643408064, 2.826134968653417, 2.950241408655753], [4.145412486952323, 4.30860565292724, 4.555158225362852]) # SHHA+SHHB+WE+BKG+GCC
 # Rappel
 # SHHA
 # __C_DYN.MEAN_STD = ([0.410824894905, 0.370634973049, 0.359682112932], [0.278580576181, 0.26925137639, 0.27156367898])
