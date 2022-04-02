@@ -18,7 +18,7 @@ def loading_data():
     # Choose differents combinaison of transformations for each dataset
   
     train_main_transform_SHHA = own_transforms.Compose([
-        own_transforms.ColorJitter(0.3),
+        #TO DO
         own_transforms.RandomHorizontallyFlip()
     ])
     
@@ -29,6 +29,7 @@ def loading_data():
     ])
 
     train_main_transform_WE = own_transforms.Compose([
+        #In progress
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         #own_transforms.ColorJitter(brightness=0.3),
         own_transforms.ColorJitter(brightness=0.5),
@@ -36,7 +37,7 @@ def loading_data():
     ])
 
     train_main_transform_GCC = own_transforms.Compose([
-        own_transforms.ColorJitter(0.3),
+        #Cf. Thierry
         own_transforms.RandomHorizontallyFlip()
     ])
     
