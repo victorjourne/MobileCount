@@ -16,7 +16,6 @@ def loading_data():
     
     # Add here specific transform func : 
     # Choose differents combinaison of transformations for each dataset
-  
     train_main_transform_SHHA = own_transforms.Compose([
         own_transforms.RandomHorizontallyFlip() #TODO
     ])
