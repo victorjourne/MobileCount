@@ -31,8 +31,8 @@ def loading_data():
     train_main_transform_WE = own_transforms.Compose([
         #In progress
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
-        #own_transforms.ColorJitter(brightness=0.3),
-        own_transforms.ColorJitter(brightness=0.5),
+        own_transforms.ColorJitter(brightness=0.3),
+        #own_transforms.ColorJitter(brightness=0.5),
         own_transforms.RandomHorizontallyFlip()
     ])
 
