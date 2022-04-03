@@ -18,8 +18,7 @@ def loading_data():
     # Choose differents combinaison of transformations for each dataset
   
     train_main_transform_SHHA = own_transforms.Compose([
-        #TO DO
-        own_transforms.RandomHorizontallyFlip()
+        own_transforms.RandomHorizontallyFlip() #TODO
     ])
     
     train_main_transform_SHHB = own_transforms.Compose([
@@ -29,22 +28,24 @@ def loading_data():
     ])
 
     train_main_transform_WE = own_transforms.Compose([
-        #In progress
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
-        #own_transforms.ColorJitter(brightness=0.3),
-        #own_transforms.ColorJitter(brightness=0.5),
+        own_transforms.ColorJitter(brightness=0.5),
         own_transforms.RandomHorizontallyFlip()
     ])
 
     train_main_transform_GCC = own_transforms.Compose([
-        #Cf. Thierry
-        own_transforms.RandomHorizontallyFlip()
+        own_transforms.RandomHorizontallyFlip() #TODO
     ])
-    
+
+    train_main_transform_BG = own_transforms.Compose([
+        own_transforms.RandomHorizontallyFlip() #TODO
+    ])
+
     specific_transform = {"SHHA__transform" : train_main_transform_SHHA,
                           "SHHB__transform" : train_main_transform_SHHB,
                           "WE__transform" : train_main_transform_WE,
-                          "GCC__transform" : train_main_transform_GCC}
+                          "GCC__transform" : train_main_transform_GCC,
+                          "BG__transform" : train_main_transform_BG}
     
     if specific_transform:
         cfg_data.PATH_SETTINGS.update(specific_transform)
