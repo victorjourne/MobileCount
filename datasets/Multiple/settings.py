@@ -11,9 +11,9 @@ __C_DYN.IMAGE_SIZE = None
 __C_DYN.TRAIN_SIZE = (576, 768) # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding
 __C_DYN.LIST_C_DATASETS = [  
     #(CustomGCC, '/workspace/data/GCC'),
-    #(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+    (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
     #(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-    (CustomWE, '/workspace/data/worldExpo10_blurred'),
+    #(CustomWE, '/workspace/data/worldExpo10_blurred'),
     #(CustomCCLabeler,  '/workspace/cclabeler/'),
 ]
 
@@ -27,7 +27,7 @@ __C_DYN.LIST_C_DATASETS = [
 # __C_DYN.MEAN_STD = ([2.773511643408064, 2.826134968653417, 2.950241408655753], [4.145412486952323, 4.30860565292724, 4.555158225362852]) # SHHA+SHHB+WE+BKG+GCC
 # Rappel
 # SHHA
-# __C_DYN.MEAN_STD = ([0.410824894905, 0.370634973049, 0.359682112932], [0.278580576181, 0.26925137639, 0.27156367898])
+__C_DYN.MEAN_STD = ([0.410824894905, 0.370634973049, 0.359682112932], [0.278580576181, 0.26925137639, 0.27156367898])
 # SHHB
 # __C_DYN.MEAN_STD = ([0.452016860247, 0.447249650955, 0.431981861591], [0.23242045939, 0.224925786257, 0.221840232611])
 # GCC
@@ -35,7 +35,7 @@ __C_DYN.LIST_C_DATASETS = [
 # BKG
 # __C_DYN.MEAN_STD = ([0.45974895, 0.46210647, 0.46128437], [0.26007405, 0.26102796, 0.2821262])
 # WE
-__C_DYN.MEAN_STD = ([0.504379212856, 0.510956227779, 0.505369007587], [0.22513884306, 0.225588873029, 0.22579960525])
+# __C_DYN.MEAN_STD = ([0.504379212856, 0.510956227779, 0.505369007587], [0.22513884306, 0.225588873029, 0.22579960525])
 
 # __C_DYN.PROB = [0.2, 0.4, 0.4] # proba getting images
 __C_DYN.COLLATE_FN = True
@@ -52,7 +52,7 @@ __C_DYN.SATURATION_JITTER = 0.
 __C_DYN.HUE_JITTER = 0.
 
 __C_DYN.RESUME_MODEL = '/data/models'
-__C_DYN.TRAIN_BATCH_SIZE = 16
+__C_DYN.TRAIN_BATCH_SIZE = 6
 __C_DYN.VAL_BATCH_SIZE = 1
 __C_DYN.PATH_SETTINGS = {
     'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
