@@ -36,19 +36,14 @@ __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth' #
 import torch
 import torch.nn as nn
 if torch.cuda.is_available():
-    device_id = torch.cuda.device_count()
-    print("device_id:",device_id)
+    nb_devices = torch.cuda.device_count()
+    print("nb_devices:",nb_devices)
     device = torch.cuda.get_device_name(range(device_id))
     print("device:",device)
-    if torch.cuda.device_count()>1:
-        print("multiple gpu")
-        nb_devices = torch.cuda.device_count()
-        print("nb_devices:",nb_devices)
-        #available_gpus = [torch.cuda.device(i) for i in range(nb_devices)]
-        #print("available_gpus:",available_gpus)
+    if nb_devices>1:
         __C.GPU_ID = [int(i) for i in range(torch.cuda.device_count())]      
-    elif train_on_gpu:
-        print("simple gpu")
+    else:
+        __C.GPU_ID = [0]   
 else:
     __C.GPU_ID = []
 print("__C.GPU_ID:",__C.GPU_ID)  
