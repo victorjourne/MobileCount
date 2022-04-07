@@ -38,7 +38,7 @@ import torch.nn as nn
 if torch.cuda.is_available():
     nb_devices = torch.cuda.device_count()
     print("nb_devices:",nb_devices)
-    device = torch.cuda.get_device_name(range(device_id))
+    device = torch.cuda.get_device_name(range(nb_devices))
     print("device:",device)
     if nb_devices>1:
         __C.GPU_ID = [int(i) for i in range(torch.cuda.device_count())]      
