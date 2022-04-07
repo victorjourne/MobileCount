@@ -17,8 +17,10 @@ class CrowdCounter(nn.Module):
         self.CCN = net()
         if self.GPU_OK:
             if len(gpus)>1:
+                print("CrowdCounter MULTIPLE GPUs")
                 self.CCN = torch.nn.DataParallel(self.CCN, device_ids=gpus).cuda()
             else:
+                print("CrowdCounter SINGLE GPU")
                 self.CCN = self.CCN.cuda()
             self.loss_mse_fn = nn.MSELoss().cuda()
         else:

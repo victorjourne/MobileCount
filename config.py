@@ -28,10 +28,31 @@ __C.PRE_GCC_MODEL = './exp/04-06_16-19_GCC_CSRNet_0.0001_rd/all_ep_130_mae_34.9_
 __C.RESUME = False # contine training
 __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth' # 
 
+#if torch.cuda.is_available():
+#    __C.GPU_ID = [0] # sigle gpu: [0], [1] ...; multi gpus: [0,1]
+#else:
+#    __C.GPU_ID = []
+    
+import torch
+import torch.nn as nn
 if torch.cuda.is_available():
-    __C.GPU_ID = [0] # sigle gpu: [0], [1] ...; multi gpus: [0,1]
+    device_id = torch.cuda.device_count()
+    print("device_id:",device_id)
+    device = torch.cuda.get_device_name(range(device_id))
+    print("device:",device)
+    if torch.cuda.device_count()>1:
+        print("multiple gpu")
+        nb_devices = torch.cuda.device_count()
+        print("nb_devices:",nb_devices)
+        #available_gpus = [torch.cuda.device(i) for i in range(nb_devices)]
+        #print("available_gpus:",available_gpus)
+        __C.GPU_ID = [int(i) for i in range(torch.cuda.device_count())]      
+    elif train_on_gpu:
+        print("simple gpu")
 else:
     __C.GPU_ID = []
+print("__C.GPU_ID:",__C.GPU_ID)  
+        
 # learning rate settings
 __C.LR = 1e-4 # learning rate
 __C.LR_DECAY = 0.995 # decay rate
