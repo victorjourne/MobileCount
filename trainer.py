@@ -50,7 +50,12 @@ class Trainer:
         self.i_tb = 0
 
         if cfg.PRE_GCC:
-            self.net.load_state_dict(torch.load(cfg.PRE_GCC_MODEL))
+            # self.net.load_state_dict(torch.load(cfg.PRE_GCC_MODEL))
+            print("cfg.PRE_GCC_MODEL:",cfg.PRE_GCC_MODEL)
+            model_dict = torch.load(cfg.PRE_GCC_MODEL)
+            if 'net' in model_dict:
+                model_dict = model_dict['net']
+            self.net.load_state_dict(model_dict)
 
         self.train_loader, self.val_loader, self.restore_transform = dataloader()
 
@@ -530,3 +535,9 @@ class Trainer:
         self.writer.add_text("validation_golden", table_golden, global_step=self.epoch + 1)
 
         print_summary(self.exp_name + "-Golden", [mae, mape, mse, mgape, mgcae, loss], self.train_record_golden)
+        
+        filename = 'golden_ep_%d_mae_%.1f_mape_%.1f_rmse_%.1f_mgape_%.1f' % (self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
+        best_golden_state = {'train_record':self.train_record, 'net':self.net.state_dict(), 'optimizer':self.optimizer.state_dict(),\
+                'scheduler':self.scheduler.state_dict(), 'epoch': self.epoch, 'i_tb':self.i_tb, 'exp_path':self.exp_path, \
+                'exp_name':self.exp_name}
+        torch.save(best_golden_state, os.path.join(exp_path, exp_name, filename+'.pth'))

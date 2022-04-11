@@ -17,32 +17,35 @@ def loading_data():
     # Add here specific transform func : 
     # Choose differents combinaison of transformations for each dataset
     train_main_transform_SHHA = own_transforms.Compose([
-        own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        own_transforms.ColorJitter(brightness=0.5),
         own_transforms.RandomHorizontallyFlip()
     ])
     
     train_main_transform_SHHB = own_transforms.Compose([
-        own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        own_transforms.ColorJitter(brightness=0.5),
         own_transforms.RandomDownOverSampling(4),
         own_transforms.RandomHorizontallyFlip()
     ])
 
     train_main_transform_WE = own_transforms.Compose([
-        own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        own_transforms.ColorJitter(brightness=0.5),
+        own_transforms.RandomHorizontallyFlip()
+    ])
+
+    train_main_transform_BG = own_transforms.Compose([
+        #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.5),
         own_transforms.RandomHorizontallyFlip()
     ])
 
     train_main_transform_GCC = own_transforms.Compose([
-        own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.RandomHorizontallyFlip()
     ])
-
-    train_main_transform_BG = own_transforms.Compose([
-        own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
-        own_transforms.RandomHorizontallyFlip()
-    ])
-
+    
     specific_transform = {"SHHA__transform" : train_main_transform_SHHA,
                           "SHHB__transform" : train_main_transform_SHHB,
                           "GCC__transform" : train_main_transform_GCC,
