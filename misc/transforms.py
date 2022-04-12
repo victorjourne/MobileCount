@@ -1,14 +1,15 @@
 import numbers
 import random
 import numpy as np
-from PIL import Image, ImageOps, ImageFilter, ImageMath
+from PIL import Image, ImageOps, ImageFilter, ImageMath, ImageEnhance
+import torchvision.transforms as standard_transforms
 from config import cfg
 import torch
 # ===============================img tranforms============================
 
 def add_margin(pil_img, new_width, new_height, left, top, color):
     result = Image.new(pil_img.mode, (new_width, new_height), color)
-    result.paste(pil_img, (left, top))
+    result.paste(pil_img,(left, top))
     return result
 
 def resize_target(pil_img, tw, th):
@@ -52,7 +53,7 @@ class RandomCrop(object):
         else:
             self.size = size
         self.padding = padding
-        self.mean = (115, 114, 110)#(tuple([int(i*255) for i in cfg.MEAN_STD[0]]))
+        self.mean = (0,0,0)#(115, 114, 110)#(tuple([int(i*255) for i in cfg.MEAN_STD[0]]))
 
     def __call__(self, img, mask):
         if self.padding > 0:
@@ -159,6 +160,64 @@ class RandomDownSampling(object):
         w, h = img.size
         return img.resize((int(w / self.factor) ,int(h / self.factor)), Image.BILINEAR) ,resize_target(mask, int(w / self.factor) ,int(h / self.factor))
        
+class RandomBrightness(object):
+    def __init__(self, factor):
+        self.factor = factor
+        
+    def __call__(self, img, mask):
+        if self.factor < 0 or random.random() > 0.5:
+            #print('RandomBrightness NO')
+            return img, mask
+
+        # Brightness factor = 1 #gives original image
+        # Brightness factor = 0.5 #darkens the image
+        # Brightness factor = 1.5 #brightens the image
+        coeff = 2.*(random.randint(0, 1) - 0.5)
+        brightness_factor = 1 + coeff*self.factor
+        #print('RandomBrightness', brightness_factor)
+        enhancer = ImageEnhance.Brightness(img)
+        img_output = enhancer.enhance(brightness_factor)
+        return img_output, mask
+
+class RandomContrast(object):
+    def __init__(self, factor):
+        self.factor = factor
+        
+    def __call__(self, img, mask):
+        if self.factor < 0 or random.random() > 0.5:
+            return img, mask
+
+        # Contrast factor = 1 #gives original image
+        # Contrast factor = 0.5 #decrease constrast
+        # Contrast factor = 1.5 #increase contrast
+        coeff = 2.*(random.randint(0, 1) - 0.5)
+        contrast_factor = 1 + coeff*self.factor
+        enhancer = ImageEnhance.Contrast(img)
+        img_output = enhancer.enhance(contrast_factor)
+        return img_output, mask
+
+class ColorJitter(object):
+    def __init__(self, brightness=0., contrast=0., saturation=0., hue=0.,):
+        self.brightness = brightness
+        self.contrast = contrast
+        self.saturation = saturation
+        self.hue = hue
+        self.action = True
+        if (isinstance(self.brightness,float) and self.brightness == 0.) and (isinstance(self.contrast,float) and self.contrast == 0.) \
+        and (isinstance(self.saturation,float) and self.saturation == 0.) and (isinstance(self.hue,float) and self.hue == 0.):
+            self.action = False
+
+    def __call__(self, img, mask):
+        
+        if not self.action or random.random() > 0.5:
+            return img, mask
+        
+        img = standard_transforms.ColorJitter(brightness=self.brightness, contrast=self.contrast, saturation=self.saturation, hue=self.hue)(img)
+
+        return img,  mask
+    
+
+
 # ===============================label tranforms============================
 
 class DeNormalize(object):

@@ -40,6 +40,9 @@ elif data_mode == 'WE':
 elif data_mode == 'GCC':
     from datasets.GCC.loading_data import loading_data
     from datasets.GCC.setting import cfg_data 
+elif data_mode == 'JHU':
+    from datasets.JHU.loading_data import loading_data
+    from datasets.JHU.setting import cfg_data 
 elif data_mode == 'Multiple':
     from datasets.Multiple.loading_data import loading_data
     from datasets.Multiple.settings import cfg_data 
