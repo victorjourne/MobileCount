@@ -1,6 +1,7 @@
 import sys
 
 sys.path.append("../ia-foule-lab/")
+import shutil
 from torch import optim
 from torch.autograd import Variable
 from torch.optim.lr_scheduler import StepLR
@@ -536,8 +537,8 @@ class Trainer:
 
         print_summary(self.exp_name + "-Golden", [mae, mape, mse, mgape, mgcae, loss], self.train_record_golden)
         
-        filename = 'golden_ep_%d_mae_%.1f_mape_%.1f_rmse_%.1f_mgape_%.1f' % (self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
-        best_golden_state = {'train_record':self.train_record, 'net':self.net.state_dict(), 'optimizer':self.optimizer.state_dict(),\
-                'scheduler':self.scheduler.state_dict(), 'epoch': self.epoch, 'i_tb':self.i_tb, 'exp_path':self.exp_path, \
-                'exp_name':self.exp_name}
-        torch.save(best_golden_state, os.path.join(exp_path, exp_name, filename+'.pth'))
+        #Uncomment those lines to store all golden model of best validation MAE
+        #filename = 'golden_ep_%d_mae_%.1f_mape_%.1f_rmse_%.1f_mgape_%.1f' % (self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
+        #filename+='.pth'
+        #shutil.copyfile(os.path.join(self.exp_path, self.exp_name, 'best_state.pth'), os.path.join(self.exp_path, self.exp_name, filename))
+
