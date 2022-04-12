@@ -30,12 +30,6 @@ __C.PRE_GCC_MODEL = '/workspace/home/gameiroth/MobileCount/exp/GCC_L10248_rcrop_
 __C.RESUME = False  # contine training
 __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth'  #
 
-# if torch.cuda.is_available():
-#    __C.GPU_ID = [0] # sigle gpu: [0], [1] ...; multi gpus: [0,1]
-# else:
-#    __C.GPU_ID = []
-
-
 if torch.cuda.is_available():
     nb_devices = torch.cuda.device_count()
     print("nb_devices:", nb_devices)

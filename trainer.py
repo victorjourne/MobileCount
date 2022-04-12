@@ -538,7 +538,7 @@ class Trainer:
         print_summary(self.exp_name + "-Golden", [mae, mape, mse, mgape, mgcae, loss], self.train_record_golden)
         
         #Uncomment those lines to store all golden model of best validation MAE
-        #filename = 'golden_ep_%d_mae_%.1f_mape_%.1f_rmse_%.1f_mgape_%.1f' % (self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
-        #filename+='.pth'
-        #shutil.copyfile(os.path.join(self.exp_path, self.exp_name, 'best_state.pth'), os.path.join(self.exp_path, self.exp_name, filename))
+        filename = 'golden_ep_%d_mae_%.1f_mape_%.1f_rmse_%.1f_mgape_%.1f' % (self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
+        filename += '.pth'
+        shutil.copyfile(os.path.join(self.exp_path, self.exp_name, 'best_state.pth'), os.path.join(self.exp_path, self.exp_name, filename))
 
