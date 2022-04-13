@@ -18,7 +18,7 @@ class CustomJHU(CustomDataset):
             raise ValueError('Must specify `JHU__gt_path` parameter')
         self.folder = folder
         self.mode = mode
-        self.add_val_in_train = True #Ajout des images 'val' dans 'train' pour augmenter la proportion train/test 65%/35%
+        self.add_val_in_train = False #Ajout des images 'val' dans 'train' pour augmenter la proportion train/test 65%/35%
         self.dataset = self.read_index()
 
     def read_index(self):

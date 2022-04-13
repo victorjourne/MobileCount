@@ -65,6 +65,9 @@ class DynamicDataset(Dataset):
             img, den = self.resize(img), self.resize(den)
         # specific dataset transform in img and den
         specific_func = dataset_func['transform']
+        print('specific_func',type(specific_func),specific_func)
+        print('img',type(img),img)
+        print('den',type(den),den)
         img, den = self.transform_img(img, den, specific=specific_func)
         return img, den
     
