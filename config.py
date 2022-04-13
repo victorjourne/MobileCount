@@ -23,7 +23,7 @@ if __C.DATASET == 'GCC':  # only for GCC
 
 __C.NET = 'MobileCount'  # net selection: MobileCount, MobileCountx1_25, MobileCountx2
 
-__C.PRE_GCC = True  # use the pretrained model on GCC dataset
+__C.PRE_GCC = False  # use the pretrained model on GCC dataset
 # __C.PRE_GCC_MODEL = './exp/04-06_16-19_GCC_CSRNet_0.0001_rd/all_ep_130_mae_34.9_mse_71.9.pth' # path to model
 __C.PRE_GCC_MODEL = '/workspace/home/gameiroth/MobileCount/exp/GCC_L10248_rcrop_downup_flip/best_state.pth'
 
