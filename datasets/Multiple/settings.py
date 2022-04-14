@@ -38,7 +38,7 @@ __C_DYN.MEAN_STD = ([0.48884395, 0.49083662, 0.4843851], [0.22677577, 0.22714858
 # __C_DYN.MEAN_STD = ([0.504379212856, 0.510956227779, 0.505369007587], [0.22513884306, 0.225588873029, 0.22579960525])
 
 # __C_DYN.PROB = [0.2, 0.4, 0.4] # proba getting images
-__C_DYN.COLLATE_FN = False
+__C_DYN.COLLATE_FN = True
 # better to remove because use in collate but no effect
 # __C_DYN.LABEL_FACTOR = 1
 __C_DYN.LOG_PARA = 2550.
