@@ -8,7 +8,7 @@ __C_DYN = edict()
 cfg_data = __C_DYN
 
 __C_DYN.IMAGE_SIZE = None
-__C_DYN.TRAIN_SIZE = (480, 848) # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
+__C_DYN.TRAIN_SIZE = (576, 768) # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
 __C_DYN.LIST_C_DATASETS = [  
     (CustomGCC, '/workspace/data/GCC'),
     #(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
@@ -52,7 +52,7 @@ __C_DYN.SATURATION_JITTER = 0.
 __C_DYN.HUE_JITTER = 0.
 
 __C_DYN.RESUME_MODEL = '/data/models'
-__C_DYN.TRAIN_BATCH_SIZE = 16
+__C_DYN.TRAIN_BATCH_SIZE = 32
 __C_DYN.VAL_BATCH_SIZE = 1
 __C_DYN.PATH_SETTINGS = {
     'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',

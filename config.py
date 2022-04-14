@@ -76,7 +76,7 @@ __C.VAL_FREQ = 10  # Before __C.VAL_DENSE_START epoches, the freq is set as __C.
 __C.VISIBLE_NUM_IMGS = 1  # must be 1 for training images with the different sizes
 
 # Infer on Golden dataset
-__C.INFER_GOLDEN_DATASET = True
+__C.INFER_GOLDEN_DATASET = False
 
 # L1 loss reduction
 __C.L1_LOSS_REDUCTION = "mean"
