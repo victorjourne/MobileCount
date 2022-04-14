@@ -42,7 +42,7 @@ def loading_data():
     ])
 
     train_main_transform_GCC = own_transforms.Compose([
-        #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.RandomHorizontallyFlip()
     ])
     
