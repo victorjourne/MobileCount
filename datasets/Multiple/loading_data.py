@@ -48,7 +48,7 @@ def loading_data():
     
     specific_transform = {"SHHA__transform" : train_main_transform_SHHA,
                           "SHHB__transform" : train_main_transform_SHHB,
-                          "GCC__transform" : train_main_transform_GCC,
+                          #"GCC__transform" : train_main_transform_GCC,
                           "WE__transform" : train_main_transform_WE,
                           "BG__transform" : train_main_transform_BG}
     
