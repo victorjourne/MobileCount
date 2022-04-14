@@ -1,7 +1,7 @@
 import numbers
 import random
 import numpy as np
-from PIL import Image, ImageOps, ImageFilter, ImageMath
+from PIL import Image, ImageOps
 from config import cfg
 import torch
 # ===============================img tranforms============================
@@ -52,7 +52,7 @@ class RandomCrop(object):
         else:
             self.size = size
         self.padding = padding
-        self.mean = (115, 114, 110)#(tuple([int(i*255) for i in cfg.MEAN_STD[0]]))
+        self.mean = (0, 0, 0)#(115, 114, 110)#(tuple([int(i*255) for i in cfg.MEAN_STD[0]]))
 
     def __call__(self, img, mask):
         if self.padding > 0:
