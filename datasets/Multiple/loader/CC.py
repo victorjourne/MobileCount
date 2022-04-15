@@ -45,19 +45,23 @@ class CustomCCLabeler(CustomDataset):
         for n, im in enumerate(list_data):
             image_path = os.path.join(self.folder, 'images',  im)
             
-            if self.gt_path is None:
-                path_gt = os.path.join(self.folder, 'jsons', im + ".json")
-            else:
-                path_gt = os.path.join(self.gt_path, pathlib.Path(im).stem + '.npz')
-            
-            try:
-                img = Image.open(image_path)
-                json_data[n] = {"path_img": image_path,
-                               "path_gt":  path_gt,
-                               "gt_count": None,
-                               "folder": self.folder}
-            except Exception as e:
-                lg.warning(f'Cannot read image: {image_path}, error: {str(e)}')
+            valid = True
+            if 'pub2.jpeg' in image_path or 'pub3.jpeg' in image_path or 'pub4.jpeg' in image_path or 'pub5.jpeg' in image_path:
+                valid = True
+            if valid:
+                if self.gt_path is None:
+                    path_gt = os.path.join(self.folder, 'jsons', im + ".json")
+                else:
+                    path_gt = os.path.join(self.gt_path, pathlib.Path(im).stem + '.npz')
+
+                try:
+                    img = Image.open(image_path)
+                    json_data[n] = {"path_img": image_path,
+                                   "path_gt":  path_gt,
+                                   "gt_count": None,
+                                   "folder": self.folder}
+                except Exception as e:
+                    lg.warning(f'Cannot read image: {image_path}, error: {str(e)}')
         df = pd.DataFrame.from_dict(json_data, orient='index')
         return df
     

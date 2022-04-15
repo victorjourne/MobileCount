@@ -1,3 +1,4 @@
+import sys
 import torch
 import numpy as np
 import pandas as pd
@@ -60,7 +61,11 @@ class DynamicDataset(Dataset):
     def __getitem__(self, index):
         row = self.dataset.loc[index]
         dataset_func = self.read_dict[row.folder]
+        # print("row.folder:",row.folder)
+        print("row.path_img:",row.path_img)
         img, den = dataset_func['img'](row.path_img), dataset_func['gt'](row.path_gt)
+        # print("img.size:",img.size)
+        # print("den.size:",den.size)
         if self.image_size is not None:
             img, den = self.resize(img), self.resize(den)
         # specific dataset transform in img and den
@@ -193,16 +198,28 @@ class CollateFN:
             min_ht, min_wd = self.get_min_size(imgs)
             cropped_imgs = []
             cropped_dens = []
+            _img_sizes = []
+            _den_sizes = []
             for i_sample in range(len(batch)):
                 _img, _den = self.random_crop(img=imgs[i_sample],
                                          den=dens[i_sample],
                                          dst_size=[min_ht, min_wd])
                 cropped_imgs.append(_img)
                 cropped_dens.append(_den)
-
-            cropped_imgs = torch.stack(cropped_imgs, 0, 
-                                       out=self.share_memory(cropped_imgs))
-            cropped_dens = torch.stack(cropped_dens, 0, 
-                                       out=self.share_memory(cropped_dens))
+                _img_sizes.append(_img.numpy().shape)
+                _den_sizes.append(_den.numpy().shape)
+                
+            try:
+                cropped_imgs = torch.stack(cropped_imgs, 0, 
+                                           out=self.share_memory(cropped_imgs))
+                cropped_dens = torch.stack(cropped_dens, 0, 
+                                           out=self.share_memory(cropped_dens))
+            except:
+                print('min_ht:',min_ht)
+                print('min_wd:',min_wd)
+                print('_img_sizes:',_img_sizes)
+                print('_den_sizes:',_den_sizes)
+                pass
+            
             return [cropped_imgs, cropped_dens]
         raise TypeError(f"Batch must contain tensors, found: {type(imgs[0])} and {type(dens[1])}")

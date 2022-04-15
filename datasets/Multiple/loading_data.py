@@ -58,7 +58,7 @@ def loading_data():
     
     train_loader = DataLoader(train_set, 
                               batch_size=cfg_data.TRAIN_BATCH_SIZE, 
-                              num_workers=8,
+                              num_workers=1,
                               collate_fn=collate,
                               shuffle=True, 
                               drop_last=True)
