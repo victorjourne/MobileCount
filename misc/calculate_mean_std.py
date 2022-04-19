@@ -125,14 +125,14 @@ tests_dictionary = {
                                                      (CustomWE, '/workspace/data/worldExpo10_blurred'),
                                                      (CustomCCLabeler, '/workspace/cclabeler/')],
             "PATH_SETTINGS": {
-                    'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
-                    'CC__index_filepath': '/workspace/cclabeler/users/background.json',
-                    'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
-                    'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
-            },
+    'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+    'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+    'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+    'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+},
                                  "VAL_BATCH_SIZE": 1,
                                  "MEAN_STD_REFERENCE":  ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": False
+                                 "RECALCULATE": True
                                  },
         "SHHA+SHHB+WE+BACKGROUND+GCC": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
                                                      (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
