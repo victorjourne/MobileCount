@@ -25,7 +25,8 @@ __C.NET = 'MobileCount'  # net selection: MobileCount, MobileCountx1_25, MobileC
 
 __C.PRE_GCC = True  # use the pretrained model on GCC dataset
 # __C.PRE_GCC_MODEL = './exp/04-06_16-19_GCC_CSRNet_0.0001_rd/all_ep_130_mae_34.9_mse_71.9.pth' # path to model
-__C.PRE_GCC_MODEL = '/workspace/home/gameiroth/MobileCount/exp/GCC_L10248_rcrop_downup_flip/best_state.pth'
+# __C.PRE_GCC_MODEL = '/workspace/home/gameiroth/MobileCount/exp/GCC_L10248_rcrop_downup_flip/best_state.pth'
+__C.PRE_GCC_MODEL = '/workspace/home/jourdanfa/mobilecount_gcc_relu.pth'
 
 __C.RESUME = False  # contine training
 __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth'  #
@@ -48,7 +49,7 @@ __C.LR = 1e-4  # learning rate
 __C.LR_DECAY = 0.995  # decay rate
 __C.LR_DECAY_START = -1  # when training epoch is more than it, the learning rate will be begin to decay
 __C.NUM_EPOCH_LR_DECAY = 1  # decay frequency
-__C.MAX_EPOCH = 500
+__C.MAX_EPOCH = 350
 
 # print 
 __C.PRINT_FREQ = 10
