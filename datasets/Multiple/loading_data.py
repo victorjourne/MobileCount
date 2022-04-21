@@ -6,11 +6,11 @@ import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 from datasets.Multiple.loader import DynamicDataset, CollateFN
 from datasets.Multiple.settings import cfg_data
-
-
+    
 def loading_data():
     mean_std = cfg_data.MEAN_STD
     log_para = cfg_data.LOG_PARA
+
     cl = CollateFN(cfg_data.TRAIN_SIZE)
     collate = cl.collate if cfg_data.COLLATE_FN and cfg_data.TRAIN_BATCH_SIZE != 1 else None
     
@@ -19,26 +19,30 @@ def loading_data():
     train_main_transform_SHHA = own_transforms.Compose([
         #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
-        own_transforms.RandomHorizontallyFlip()
+        own_transforms.RandomHorizontallyFlip(),
+        own_transforms.WriteTexts(),
     ])
     
     train_main_transform_SHHB = own_transforms.Compose([
         #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
         own_transforms.RandomDownOverSampling(4),
-        own_transforms.RandomHorizontallyFlip()
+        own_transforms.RandomHorizontallyFlip(),
+        own_transforms.WriteTexts(),
     ])
 
     train_main_transform_WE = own_transforms.Compose([
         #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
-        own_transforms.RandomHorizontallyFlip()
+        own_transforms.RandomHorizontallyFlip(),
+        own_transforms.WriteTexts(),
     ])
 
     train_main_transform_BG = own_transforms.Compose([
         #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
-        own_transforms.RandomHorizontallyFlip()
+        own_transforms.RandomHorizontallyFlip(),
+        own_transforms.WriteTexts(),
     ])
 
     train_main_transform_GCC = own_transforms.Compose([
