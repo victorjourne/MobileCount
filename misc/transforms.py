@@ -220,12 +220,11 @@ class ColorJitter(object):
         return img,  mask
     
 class WriteTexts(object):
-    def __init__(self):
-        pass
-
-    def __call__(self, img, mask):
+    def __init__(self, factor):
+        self.factor = factor
         
-        if random.random() > 0.75:
+    def __call__(self, img, mask):
+        if self.factor < 0 or self.factor>1 or random.random() > self.factor:
             return img, mask
         
         img = write_texts(img, cfg.TEXTS2ADD)
