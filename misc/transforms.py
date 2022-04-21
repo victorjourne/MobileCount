@@ -225,7 +225,7 @@ class WriteTexts(object):
 
     def __call__(self, img, mask):
         
-        if random.random() > 0.5:
+        if random.random() > 0.75:
             return img, mask
         
         img = write_texts(img, cfg.TEXTS2ADD)

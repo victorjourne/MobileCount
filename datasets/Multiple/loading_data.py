@@ -20,7 +20,6 @@ def loading_data():
         #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
         own_transforms.RandomHorizontallyFlip(),
-        own_transforms.WriteTexts(),
     ])
     
     train_main_transform_SHHB = own_transforms.Compose([
@@ -28,14 +27,12 @@ def loading_data():
         own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
         own_transforms.RandomDownOverSampling(4),
         own_transforms.RandomHorizontallyFlip(),
-        own_transforms.WriteTexts(),
     ])
 
     train_main_transform_WE = own_transforms.Compose([
         #own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
         own_transforms.RandomHorizontallyFlip(),
-        own_transforms.WriteTexts(),
     ])
 
     train_main_transform_BG = own_transforms.Compose([
