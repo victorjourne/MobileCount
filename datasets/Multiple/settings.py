@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE, CustomJHU
+from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE
 
 # init
 __C_DYN = edict()
@@ -8,14 +8,13 @@ __C_DYN = edict()
 cfg_data = __C_DYN
 
 __C_DYN.IMAGE_SIZE = None
-__C_DYN.TRAIN_SIZE = (576, 768)  # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding
-__C_DYN.LIST_C_DATASETS = [
-    # (CustomGCC, '/workspace/data/GCC'),
-    # (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-    # (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-    # (CustomWE, '/workspace/data/worldExpo10_blurred'),
-    (CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
-    # (CustomCCLabeler, '/workspace/cclabeler/'),
+__C_DYN.TRAIN_SIZE = (576, 768) # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
+__C_DYN.LIST_C_DATASETS = [  
+    #(CustomGCC, '/workspace/data/GCC'),
+    (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+    (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+    (CustomWE, '/workspace/data/worldExpo10_blurred'),
+    (CustomCCLabeler,  '/workspace/cclabeler/'),
 ]
 
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG
@@ -24,9 +23,8 @@ __C_DYN.LIST_C_DATASETS = [
 # __C_DYN.MEAN_STD = ([0.43414703, 0.41423598, 0.40074137], [0.25675705, 0.25026417, 0.24924693]) # SHHA+SHHB
 # __C_DYN.MEAN_STD = ([0.3220204, 0.31172827, 0.2942992], [0.23350126, 0.21823345, 0.19834155]) # SHHA+SHHB+GCC+BKG
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG
-# __C_DYN.MEAN_STD = ([0.48884395, 0.49083662, 0.4843851], [0.22677577, 0.22714858, 0.22938044])  # SHHA+SHHB+WE+BKG
-# __C_DYN.MEAN_STD = ([2.773511643408064, 2.826134968653417, 2.950241408655753],
-#                     [4.145412486952323, 4.30860565292724, 4.555158225362852])  # SHHA+SHHB+WE+BKG+GCC
+__C_DYN.MEAN_STD = ([0.48884395, 0.49083662, 0.4843851], [0.22677577, 0.22714858, 0.22938044]) # SHHA+SHHB+WE+BKG
+# __C_DYN.MEAN_STD = ([2.773511643408064, 2.826134968653417, 2.950241408655753], [4.145412486952323, 4.30860565292724, 4.555158225362852]) # SHHA+SHHB+WE+BKG+GCC
 # Rappel
 # SHHA
 # __C_DYN.MEAN_STD = ([0.410824894905, 0.370634973049, 0.359682112932], [0.278580576181, 0.26925137639, 0.27156367898])
@@ -38,8 +36,6 @@ __C_DYN.LIST_C_DATASETS = [
 # __C_DYN.MEAN_STD = ([0.45974895, 0.46210647, 0.46128437], [0.26007405, 0.26102796, 0.2821262])
 # WE
 # __C_DYN.MEAN_STD = ([0.504379212856, 0.510956227779, 0.505369007587], [0.22513884306, 0.225588873029, 0.22579960525])
-# JHU
-__C_DYN.MEAN_STD = ([0.43424335, 0.39698952, 0.38906667], [0.28815442, 0.28000653, 0.2846415])
 
 # __C_DYN.PROB = [0.2, 0.4, 0.4] # proba getting images
 __C_DYN.COLLATE_FN = True
@@ -62,24 +58,21 @@ __C_DYN.PATH_SETTINGS = {
     'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
     'CC__index_filepath': '/workspace/cclabeler/users/background.json',
     'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
-    'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/',
-    'JHU__gt_path': '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0'
+    'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
 }
 
 # - GCC :
 #    - GCC__gt_folder
 #    - GCC__index_folder
 #    - GCC__gt_format
-# CC :
+# CC : 
 #     required : CC__index_folder
-#     optionnal :
+#     optionnal : 
 #        - BG__gt_format
 #        - GD__gt_format
 # - SHH :
-#    - SHHA__gt_name_folder
-#    - SHHA__gt_format
+#    - SHHA__gt_name_folder 
+#    - SHHA__gt_format          
 #    - SHHB__gt_name_folder
 #    - SHHB__gt_format
-# - WE : Only required dataset path /workspace/data/worldExpo10_blurred
-# - JHU :
 # NOTE: ds gt folder must be in shh train / test folder (variable is the name of folder)

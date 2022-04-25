@@ -34,11 +34,6 @@ tests_dictionary = {
                  [0.452016860247, 0.447249650955, 0.431981861591], [0.23242045939, 0.224925786257, 0.221840232611]),
              "RECALCULATE": False
              },
-    "JHU": {"LIST_C_DATASETS": [(CustomJHU, '/workspace/data/jhu_crowd_v2.0/')],
-             "VAL_BATCH_SIZE": 1,
-             "MEAN_STD_REFERENCE": ([0.43424335, 0.39698952, 0.38906667], [0.28815442, 0.28000653, 0.2846415]),
-             "RECALCULATE": False
-             },
     "GCC": {"LIST_C_DATASETS": [(CustomGCC, '/workspace/data/GCC')],
             "PATH_SETTINGS": {
                     'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
@@ -152,7 +147,7 @@ tests_dictionary = {
             },
                                  "VAL_BATCH_SIZE": 1,
                                  "MEAN_STD_REFERENCE":  ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": False
+                                 "RECALCULATE": True
                                  },
 }
 
@@ -257,3 +252,4 @@ if __name__ == '__main__':
         writer = pd.ExcelWriter(xlsx_file)
         results_df.to_excel(writer, 'results', index=False)
         writer.save()
+
