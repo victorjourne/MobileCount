@@ -26,7 +26,7 @@ tests_dictionary = {
              "VAL_BATCH_SIZE": 1,
              "MEAN_STD_REFERENCE": (
                  [0.410824894905, 0.370634973049, 0.359682112932], [0.278580576181, 0.26925137639, 0.27156367898]),
-             "RECALCULATE": True
+             "RECALCULATE": False
              },
     "SHHB": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/')],
              "VAL_BATCH_SIZE": 1,
@@ -147,7 +147,7 @@ tests_dictionary = {
             },
                                  "VAL_BATCH_SIZE": 1,
                                  "MEAN_STD_REFERENCE":  ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": True
+                                 "RECALCULATE": False
                                  },
 }
 
@@ -181,7 +181,7 @@ if __name__ == '__main__':
                                      main_transform=None,
                                      img_transform=img_transform,
                                      gt_transform=gt_transform,
-                                     image_size=(1024, 768),
+                                     image_size=(576, 768),
                                      **path_settings)
 
             val_loader = DataLoader(val_set,
