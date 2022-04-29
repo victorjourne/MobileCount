@@ -21,12 +21,12 @@ if __C.DATASET == 'GCC':  # only for GCC
 
     __C.VAL_MODE = cfg_data.VAL_MODE
 
-__C.NET = 'MobileCount'  # net selection: MobileCount, MobileCountx1_25, MobileCountx2
+__C.NET = 'MobileCountx2'  # net selection: MobileCount, MobileCountx1_25, MobileCountx2
 
 __C.PRE_GCC = True  # use the pretrained model on GCC dataset
-# __C.PRE_GCC_MODEL = './exp/04-06_16-19_GCC_CSRNet_0.0001_rd/all_ep_130_mae_34.9_mse_71.9.pth' # path to model
-# __C.PRE_GCC_MODEL = '/workspace/home/gameiroth/MobileCount/exp/GCC_L10248_rcrop_downup_flip/best_state.pth'
 __C.PRE_GCC_MODEL = '/workspace/home/jourdanfa/mobilecount_gcc_relu.pth'
+__C.PRE_GCC_MODEL = '/workspace/share/iafoule/tensorboard/baseline/gcc_mc2/golden_ep_81_mae_57.2_mape_51.8_rmse_149.0_mgape_65.3.pth'
+__C.PRE_GCC_MODEL = '/workspace/share/iafoule/tensorboard/baseline/gcc_mc2/best_state.pth'
 
 __C.RESUME = False  # contine training
 __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth'  #
