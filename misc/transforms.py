@@ -5,6 +5,9 @@ from PIL import Image, ImageOps, ImageFilter, ImageMath, ImageEnhance
 import torchvision.transforms as standard_transforms
 from config import cfg
 import torch
+from iafoule.write_text import write_texts
+
+
 # ===============================img tranforms============================
 
 def add_margin(pil_img, new_width, new_height, left, top, color):
@@ -216,6 +219,17 @@ class ColorJitter(object):
 
         return img,  mask
     
+class WriteTexts(object):
+    def __init__(self, factor):
+        self.factor = factor
+        
+    def __call__(self, img, mask):
+        if self.factor < 0 or self.factor>1 or random.random() > self.factor:
+            return img, mask
+        
+        img = write_texts(img, cfg.TEXTS2ADD)
+
+        return img,  mask
 
 
 # ===============================label tranforms============================

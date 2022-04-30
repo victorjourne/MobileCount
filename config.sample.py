@@ -21,11 +21,12 @@ if __C.DATASET == 'GCC':  # only for GCC
 
     __C.VAL_MODE = cfg_data.VAL_MODE
 
-__C.NET = 'MobileCount'  # net selection: MobileCount, MobileCountx1_25, MobileCountx2
+__C.NET = 'MobileCountx2'  # net selection: MobileCount, MobileCountx1_25, MobileCountx2
 
 __C.PRE_GCC = True  # use the pretrained model on GCC dataset
-# __C.PRE_GCC_MODEL = './exp/04-06_16-19_GCC_CSRNet_0.0001_rd/all_ep_130_mae_34.9_mse_71.9.pth' # path to model
-__C.PRE_GCC_MODEL = '/workspace/home/gameiroth/MobileCount/exp/GCC_L10248_rcrop_downup_flip/best_state.pth'
+__C.PRE_GCC_MODEL = '/workspace/home/jourdanfa/mobilecount_gcc_relu.pth'
+__C.PRE_GCC_MODEL = '/workspace/share/iafoule/tensorboard/baseline/gcc_mc2/golden_ep_81_mae_57.2_mape_51.8_rmse_149.0_mgape_65.3.pth'
+__C.PRE_GCC_MODEL = '/workspace/share/iafoule/tensorboard/baseline/gcc_mc2/best_state.pth'
 
 __C.RESUME = False  # contine training
 __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth'  #
@@ -76,7 +77,8 @@ __C.VAL_FREQ = 10  # Before __C.VAL_DENSE_START epoches, the freq is set as __C.
 __C.VISIBLE_NUM_IMGS = 1  # must be 1 for training images with the different sizes
 
 # Infer on Golden dataset
-__C.INFER_GOLDEN_DATASET = False
+__C.INFER_GOLDEN_DATASET = True
+__C.STORE_MODEL_AFTER_GOLDEN_INFERENCE = True
 
 # L1 loss reduction
 __C.L1_LOSS_REDUCTION = "mean"
@@ -86,6 +88,8 @@ __C.CUSTOM_LOSS = True
 __C.CUSTOM_LOSS_LAMBDA = 10
 __C.CUSTOM_LOSS_SIZES = (2, 4, 8)
 
+
+__C.TEXTS2ADD = ''
 # ================================================================================
 # ================================================================================
 # ================================================================================
