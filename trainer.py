@@ -95,7 +95,7 @@ class Trainer:
             if epoch % self.cfg.VAL_FREQ == 0 or epoch > self.cfg.VAL_DENSE_START:
                 self.timer['val time'].tic()
                 best_model = False
-                if self.data_mode in ['SHHA', 'SHHB', 'QNRF', 'UCF50', 'Multiple']:
+                if self.data_mode in ['SHHA', 'SHHB', 'QNRF', 'UCF50', 'Multiple', 'JHU']:
                     best_model = self.validate_v1()
                 elif self.data_mode == 'WE':
                     best_model = self.validate_v2()
@@ -162,11 +162,11 @@ class Trainer:
 
         for vi, data in enumerate(self.val_loader, 0):
             img, gt_map = data
+            #print('vi:', vi, 'img.size:', img.data.numpy().shape)
 
             with torch.no_grad():
                 img = Variable(img)
                 gt_map = Variable(gt_map)
-
                 if torch.cuda.is_available():
                     img = img.cuda()
                     gt_map = gt_map.cuda()

@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE
+from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE, CustomJHU
 
 # init
 __C_DYN = edict()
@@ -15,6 +15,7 @@ __C_DYN.LIST_C_DATASETS = [
     (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
     (CustomWE, '/workspace/data/worldExpo10_blurred'),
     (CustomCCLabeler,  '/workspace/cclabeler/'),
+    (CustomJHU,  '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/'),
 ]
 
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG
@@ -35,6 +36,8 @@ __C_DYN.MEAN_STD = ([0.48879814, 0.4907805, 0.4841541], [0.22630496, 0.22669446,
 # BKG
 # __C_DYN.MEAN_STD = ([0.45974895, 0.46210647, 0.46128437], [0.26007405, 0.26102796, 0.2821262])
 # WE
+# __C_DYN.MEAN_STD = ([0.504379212856, 0.510956227779, 0.505369007587], [0.22513884306, 0.225588873029, 0.22579960525])
+# JHU
 # __C_DYN.MEAN_STD = ([0.504379212856, 0.510956227779, 0.505369007587], [0.22513884306, 0.225588873029, 0.22579960525])
 
 # __C_DYN.PROB = [0.2, 0.4, 0.4] # proba getting images
@@ -59,6 +62,7 @@ __C_DYN.PATH_SETTINGS = {
     'CC__index_filepath': '/workspace/cclabeler/users/background.json',
     'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
     'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+    'JHU__gt_path': '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/'
 }
 
 # - GCC :

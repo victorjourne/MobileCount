@@ -15,7 +15,7 @@ __C_JHU.LABEL_FACTOR = 1
 __C_JHU.LOG_PARA = 2550.
 
 __C_JHU.RESUME_MODEL = ''#model path
-__C_JHU.TRAIN_BATCH_SIZE = 6 #imgs
+__C_JHU.TRAIN_BATCH_SIZE = 16 #imgs
 
 __C_JHU.VAL_BATCH_SIZE = 1 #
 
