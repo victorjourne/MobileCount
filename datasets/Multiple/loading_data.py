@@ -42,6 +42,12 @@ def loading_data():
         own_transforms.WriteTexts(factor=0.75),
     ])
 
+    train_main_transform_JHU = own_transforms.Compose([
+        own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
+        own_transforms.ColorJitter(brightness=0.5, contrast=0.5),
+        own_transforms.RandomHorizontallyFlip(),
+    ])
+    
     train_main_transform_GCC = own_transforms.Compose([
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
         #own_transforms.RandomDownOverSampling(3),
@@ -52,7 +58,9 @@ def loading_data():
                           "SHHB__transform" : train_main_transform_SHHB,
                           "GCC__transform" : train_main_transform_GCC,
                           "WE__transform" : train_main_transform_WE,
-                          "BG__transform" : train_main_transform_BG}
+                          "BG__transform" : train_main_transform_BG,
+                          "JHU__transform" : train_main_transform_JHU,
+                         }
     
     if specific_transform:
         cfg_data.PATH_SETTINGS.update(specific_transform)

@@ -12,7 +12,7 @@ import misc.transforms as own_transforms
 from torch.utils.data import DataLoader
 
 from datasets.Multiple.loader import DynamicDataset
-from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE
+from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE, CustomJHU
 from datasets.Multiple.settings import cfg_data
 
 from iafoule.utils import get_mean_and_std_by_channel
@@ -22,6 +22,28 @@ beginning_time = time.time()
 # Test de recalcul des mean std des images de ShangaiTechA et B, change the list below and run the python script
 output_directory = "/workspace/home/jourdanfa/data/"
 tests_dictionary = {
+    "JHU": {"LIST_C_DATASETS": [(CustomJHU, '/workspace/data/jhu_crowd_v2.0/')],
+             "VAL_BATCH_SIZE": 1,
+             "MEAN_STD_REFERENCE": ([0.4339488, 0.39700276, 0.38843033], [0.28619412, 0.27814415, 0.28290176]),
+             "RECALCULATE": True,
+             },
+    "SHHA+SHHB+WE+BKG+JHU": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                                                     (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                                                     (CustomWE, '/workspace/data/worldExpo10_blurred'),
+                                                     (CustomCCLabeler, '/workspace/cclabeler/'),
+                                                     (CustomJHU,  '/workspace/data/jhu_crowd_v2.0/'),
+                                                   ],
+                             "PATH_SETTINGS": {
+                                'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+                                'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+                                'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+                                'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/',
+                                'JHU__gt_path': '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/',
+                              },
+                         "VAL_BATCH_SIZE": 1,
+                         "MEAN_STD_REFERENCE":  ([0.47029132, 0.45914084, 0.45185772], [0.24948487, 0.24923775, 0.25277084]),
+                         "RECALCULATE": True,
+                         },
     "SHHA": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/')],
              "VAL_BATCH_SIZE": 1,
              "MEAN_STD_REFERENCE": (
@@ -132,7 +154,7 @@ tests_dictionary = {
 },
                                  "VAL_BATCH_SIZE": 1,
                                  "MEAN_STD_REFERENCE":  ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": True
+                                 "RECALCULATE": False
                                  },
         "SHHA+SHHB+WE+BACKGROUND+GCC": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
                                                      (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),

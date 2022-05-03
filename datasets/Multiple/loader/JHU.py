@@ -47,7 +47,7 @@ class CustomJHU(CustomDataset):
                 "folder": self.folder
             }
         df = pd.DataFrame.from_dict(json_data, orient='index')
-        print("df.shape:", df.shape)
+        print(f'CustomJHU - mode:{self.mode} - df.shape:{df.shape}')
         return df
 
     def load_gt(self, filename):
