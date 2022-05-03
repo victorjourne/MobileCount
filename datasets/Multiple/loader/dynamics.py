@@ -1,19 +1,21 @@
-import torch
+import logging as lg
+import random
+
 import numpy as np
 import pandas as pd
-import logging as lg
-from torch.utils.data import Dataset
+import torch
 from PIL import Image
-import random
+from torch.utils.data import Dataset
+
 
 class DynamicDataset(Dataset):
     def __init__(self,
                  couple_datasets,
                  mode,
-                 main_transform=None, 
+                 main_transform=None,
                  img_transform=None,
                  gt_transform=None,
-                 image_size=None, 
+                 image_size=None,
                  **kwargs):
         """
             - couple_datasets : tuple or list of tuple, tuple for dataset class and
@@ -53,10 +55,10 @@ class DynamicDataset(Dataset):
 
     def __len__(self):
         return len(self.dataset)
-    
+
     def resize(self, img):
         return img.resize(self.image_size, Image.BILINEAR)
-    
+
     def __getitem__(self, index):
         row = self.dataset.loc[index]
         dataset_func = self.read_dict[row.folder]
@@ -65,12 +67,9 @@ class DynamicDataset(Dataset):
             img, den = self.resize(img), self.resize(den)
         # specific dataset transform in img and den
         specific_func = dataset_func['transform']
-        #print('specific_func',type(specific_func),specific_func)
-        #print('img',type(img),img)
-        #print('den',type(den),den)
         img, den = self.transform_img(img, den, specific=specific_func)
         return img, den
-    
+
     def transform_img(self, img, den, specific=None):
         if self.main_transform is not None:
             if specific is not None:
@@ -82,7 +81,7 @@ class DynamicDataset(Dataset):
         if self.gt_transform is not None:
             den = self.gt_transform(den)
         return img, den
-    
+
     def parse_dataset(self):
         for LoadClass, folder_dataset in self.couple_datasets:
             loader = LoadClass(folder_dataset, self.mode, **self.kwargs)
@@ -98,14 +97,15 @@ class CustomDataset:
     """
     Main class for reading Custom Datasets
     """
+
     def __init__(self):
         self.mode = None
         self.dataset = None
         self.transform = None
-        
+
     def read_index(self):
         pass
-    
+
     def read_image(self, img_path):
         """
         Read an image and return Pillow Image
@@ -114,7 +114,7 @@ class CustomDataset:
         if img.mode != 'RGB':
             img = img.convert('RGB')
         return img
-    
+
     def read_gt(self, gt_path):
         """
         Read GT and return Pillow Image
@@ -123,31 +123,31 @@ class CustomDataset:
         den = den_array.astype(np.float32, copy=False)
         den = Image.fromarray(den)
         return den
-    
+
     def load_gt(self, gt_path):
         """
         Loader of density map
         """
         pass
-    
+
     def __repr__(self):
         return f'{type(self).__name__} in mode {self.mode}'
-    
+
     def __len__(self):
         return len(self.dataset)
-    
+
     def check_density_map(self, density_map):
         sum_negative = (density_map < 0).sum()
         min_negative = (density_map < 0).min()
         if sum_negative < 0.:
-            lg.warning(f'density map with negative values {filename} - sum : {sum_negative} - min : {min_negative}')
-            assert sum_negative == 0.        
+            lg.warning(f'density map with negative values - sum : {sum_negative} - min : {min_negative}')
+            assert sum_negative == 0.
 
 
 class CollateFN:
     def __init__(self, train_size):
         self.TRAIN_SIZE = train_size
-    
+
     def get_min_size(self, batch):
         "Find the min shape size in the batch"
         min_ht, min_wd = self.TRAIN_SIZE
@@ -180,7 +180,6 @@ class CollateFN:
         """
         out = None
         if False:
-
             numel = sum([x.numel() for x in batch])
             storage = batch[0].storage()._new_shared(numel)
             out = batch[0].new(storage)
@@ -199,14 +198,14 @@ class CollateFN:
             cropped_dens = []
             for i_sample in range(len(batch)):
                 _img, _den = self.random_crop(img=imgs[i_sample],
-                                         den=dens[i_sample],
-                                         dst_size=[min_ht, min_wd])
+                                              den=dens[i_sample],
+                                              dst_size=[min_ht, min_wd])
                 cropped_imgs.append(_img)
                 cropped_dens.append(_den)
 
-            cropped_imgs = torch.stack(cropped_imgs, 0, 
+            cropped_imgs = torch.stack(cropped_imgs, 0,
                                        out=self.share_memory(cropped_imgs))
-            cropped_dens = torch.stack(cropped_dens, 0, 
+            cropped_dens = torch.stack(cropped_dens, 0,
                                        out=self.share_memory(cropped_dens))
             return [cropped_imgs, cropped_dens]
         raise TypeError(f"Batch must contain tensors, found: {type(imgs[0])} and {type(dens[1])}")

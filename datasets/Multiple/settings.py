@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE, CustomJHU
+from datasets.Multiple.loader import CustomCCLabeler, CustomSHH, CustomWE, CustomJHU
 
 # init
 __C_DYN = edict()
@@ -8,14 +8,14 @@ __C_DYN = edict()
 cfg_data = __C_DYN
 
 __C_DYN.IMAGE_SIZE = None
-__C_DYN.TRAIN_SIZE = (576, 768) # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
-__C_DYN.LIST_C_DATASETS = [  
-    #(CustomGCC, '/workspace/data/GCC'),
+__C_DYN.TRAIN_SIZE = (576, 768)  # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
+__C_DYN.LIST_C_DATASETS = [
+    # (CustomGCC, '/workspace/data/GCC'),
     (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
     (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
     (CustomWE, '/workspace/data/worldExpo10_blurred'),
-    (CustomCCLabeler,  '/workspace/cclabeler/'),
-    (CustomJHU,  '/workspace/data/jhu_crowd_v2.0/'),
+    (CustomCCLabeler, '/workspace/cclabeler/'),
+    (CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
 ]
 
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG
