@@ -17,6 +17,7 @@ class CustomJHU(CustomDataset):
         self.transform = kwargs.get('JHU__transform', None)
         if self.gt_path is None:
             raise ValueError('Must specify `JHU__gt_path` parameter')
+        self.dataset_weight = kwargs.get('JHU__dataset_weight', 1)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()
@@ -41,7 +42,9 @@ class CustomJHU(CustomDataset):
                     "path_img": im,
                     "path_gt": path_gt,
                     "gt_count": gt_count,
-                    "folder": self.folder}
+                    "folder": self.folder,
+                    "sample_weight": self.dataset_weight,
+                }
                 count += 1
             else:
                 #no .npZ file means no correct points on image

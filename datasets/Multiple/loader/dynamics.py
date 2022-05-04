@@ -61,6 +61,9 @@ class DynamicDataset(Dataset):
 
     def __getitem__(self, index):
         row = self.dataset.loc[index]
+        sample_weight = 1
+        if 'sample_weight' in row:
+            sample_weight = int(row['sample_weight'])
         dataset_func = self.read_dict[row.folder]
         img, den = dataset_func['img'](row.path_img), dataset_func['gt'](row.path_gt)
         if self.image_size is not None:

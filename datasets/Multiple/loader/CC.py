@@ -25,11 +25,13 @@ class CustomCCLabeler(CustomDataset):
             self.gt_path = kwargs.get('BG__gt_path', None)
             self.gt_format = kwargs.get('BG__gt_format', '.json')
             self.transform = kwargs.get('BG__transform', None)
+            self.dataset_weight = kwargs.get('BG__dataset_weight', 10)
         elif 'golden' in self.gt_index_filepath:
             self.subset = 'golden'
             self.gt_path = kwargs.get('GD__gt_path', None)            
             self.transform = kwargs.get('GD__transform', None)
             self.gt_format = kwargs.get('GD__gt_format', '.json')
+            self.dataset_weight = kwargs.get('GD__dataset_weight', 1)
         else:
             raise NotImplementedError
         
@@ -58,9 +60,11 @@ class CustomCCLabeler(CustomDataset):
             try:
                 img = Image.open(image_path)
                 json_data[n] = {"path_img": image_path,
-                               "path_gt":  path_gt,
-                               "gt_count": None,
-                               "folder": self.folder}
+                                "path_gt":  path_gt,
+                                "gt_count": None,
+                                "folder": self.folder,
+                                "sample_weight": self.dataset_weight,
+                               }
             except Exception as e:
                 lg.warning(f'Cannot read image: {image_path}, error: {str(e)}')
         df = pd.DataFrame.from_dict(json_data, orient='index')

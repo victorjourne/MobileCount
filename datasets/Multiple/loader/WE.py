@@ -15,6 +15,7 @@ class CustomWE(CustomDataset):
         self.val_folder = ['104207','200608','200702','202201','500717']
         self.gt_format = kwargs.get('WE__gt_format', '.csv')
         self.transform = kwargs.get('WE__transform', None)
+        self.dataset_weight = kwargs.get('WE__dataset_weight', 1)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()
@@ -40,7 +41,8 @@ class CustomWE(CustomDataset):
                             "path_img": im,
                             "path_gt": path_gt,
                             "gt_count": gt_count,
-                            "folder": self.folder
+                            "folder": self.folder,
+                            "sample_weight": self.dataset_weight,
                             }
         df = pd.DataFrame.from_dict(json_data, orient='index')
         print(f'CustomWE - mode:{self.mode} - df.shape:{df.shape}')

@@ -20,11 +20,13 @@ class CustomSHH(CustomDataset):
             self.gt_name_folder = kwargs.get('SHHA__gt_name_folder', 'maps_adaptive_kernel') 
             self.gt_format = kwargs.get('SHHA__gt_format', '.h5')
             self.transform = kwargs.get('SHHA__transform', None)
+            self.dataset_weight = kwargs.get('SHHA__dataset_weight', 1)
         elif '_B_' in folder:
             self.subset = 'SHHB'
             self.gt_name_folder = kwargs.get('SHHB__gt_name_folder', 'maps_fixed_kernel') 
             self.gt_format = kwargs.get('SHHB__gt_format', '.h5')
             self.transform = kwargs.get('SHHB__transform', None)
+            self.dataset_weight = kwargs.get('SHHB__dataset_weight', 1)
         else:
             raise ValueError('Choose a path with SHH part A or SHH part B')
         self.folder = folder
@@ -46,7 +48,8 @@ class CustomSHH(CustomDataset):
                             "path_img": im,
                             "path_gt": os.path.join(gt_folder, filename + self.gt_format),
                             "gt_count": gt_count,
-                            "folder": self.folder
+                            "folder": self.folder,
+                            "sample_weight": self.dataset_weight,
                             }
         df = pd.DataFrame.from_dict(json_data, orient='index')
         print(f'CustomSHH - subset:{self.subset} - mode:{self.mode} - df.shape:{df.shape}')        

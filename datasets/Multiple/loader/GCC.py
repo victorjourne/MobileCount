@@ -17,6 +17,7 @@ class CustomGCC(CustomDataset):
         self.transform = kwargs.get('GCC__transform', None)
         if self.gt_folder is None:
             raise ValueError('Must specify `GCC__gt_folder` parameter')
+        self.dataset_weight = kwargs.get('GCC__dataset_weight', 1)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()
@@ -34,7 +35,8 @@ class CustomGCC(CustomDataset):
                                                      'pngs', filename + '.png'),
                            "path_gt": os.path.join(self.gt_folder, filename) + self.gt_format,
                            "gt_count": gt_count,
-                           "folder": self.folder
+                           "folder": self.folder,
+                            "sample_weight": self.dataset_weight,
                             }
         df = pd.DataFrame.from_dict(json_data, orient='index')
         print(f'CustomGCC - mode:{self.mode} - df.shape:{df.shape}')
