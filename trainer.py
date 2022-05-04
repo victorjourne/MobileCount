@@ -162,7 +162,6 @@ class Trainer:
 
         for vi, data in enumerate(self.val_loader, 0):
             img, gt_map = data
-            #print('vi:', vi, 'img.size:', img.data.numpy().shape)
 
             with torch.no_grad():
                 img = Variable(img)
