@@ -115,7 +115,7 @@ class Trainer:
         self.net.train()
         for i, data in enumerate(self.train_loader, 0):
             self.timer['iter time'].tic()
-            img, gt_map, row = data
+            img, gt_map = data
             img = Variable(img)
             gt_map = Variable(gt_map)
 
