@@ -71,7 +71,7 @@ class DynamicDataset(Dataset):
         # specific dataset transform in img and den
         specific_func = dataset_func['transform']
         img, den = self.transform_img(img, den, specific=specific_func)
-        return img, den
+        return img, den, row
 
     def transform_img(self, img, den, specific=None):
         if self.main_transform is not None:

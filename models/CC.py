@@ -50,7 +50,7 @@ class CrowdCounter(nn.Module):
     def f_loss(self):
         return self.loss_mse
     
-    def forward(self, img, gt_map=None):                               
+    def forward(self, img, gt_map=None, sample_weight=None):                               
         density_map = self.CCN(img)    
         if gt_map is not None : 
             self.loss_mse = self.build_loss(density_map.squeeze(), gt_map.squeeze())     

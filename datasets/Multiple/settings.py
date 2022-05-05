@@ -10,11 +10,11 @@ cfg_data = __C_DYN
 __C_DYN.IMAGE_SIZE = None
 __C_DYN.TRAIN_SIZE = (576, 768)  # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
 __C_DYN.LIST_C_DATASETS = [
-    # (CustomGCC, '/workspace/data/GCC'),
-    # (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-    # (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-    # (CustomWE, '/workspace/data/worldExpo10_blurred'),
-    # (CustomCCLabeler, '/workspace/cclabeler/'),
+    (CustomGCC, '/workspace/data/GCC'),
+    (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+    (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+    (CustomWE, '/workspace/data/worldExpo10_blurred'),
+    (CustomCCLabeler, '/workspace/cclabeler/'),
     (CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
 ]
 
@@ -25,7 +25,7 @@ __C_DYN.LIST_C_DATASETS = [
 # __C_DYN.MEAN_STD = ([0.3220204, 0.31172827, 0.2942992], [0.23350126, 0.21823345, 0.19834155]) # SHHA+SHHB+GCC+BKG
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG
 # __C_DYN.MEAN_STD = ([0.48879814, 0.4907805, 0.4841541], [0.22630496, 0.22669446, 0.22931112]) # SHHA+SHHB+WE+BKG
-# __C_DYN.MEAN_STD = ([0.47029132, 0.45914084, 0.45185772], [0.24948487, 0.24923775, 0.25277084]) # SHHA+SHHB+WE+BKG+JHU
+__C_DYN.MEAN_STD = ([0.47029132, 0.45914084, 0.45185772], [0.24948487, 0.24923775, 0.25277084]) # SHHA+SHHB+WE+BKG+JHU
 # __C_DYN.MEAN_STD = ([2.773511643408064, 2.826134968653417, 2.950241408655753], [4.145412486952323, 4.30860565292724, 4.555158225362852]) # SHHA+SHHB+WE+BKG+GCC
 # Rappel
 # SHHA
@@ -39,7 +39,7 @@ __C_DYN.LIST_C_DATASETS = [
 # WE
 # __C_DYN.MEAN_STD = ([0.504379212856, 0.510956227779, 0.505369007587], [0.22513884306, 0.225588873029, 0.22579960525])
 # JHU
-__C_DYN.MEAN_STD = ([0.4339488, 0.39700276, 0.38843033], [0.28619412, 0.27814415, 0.28290176])
+# __C_DYN.MEAN_STD = ([0.4339488, 0.39700276, 0.38843033], [0.28619412, 0.27814415, 0.28290176])
 
 # __C_DYN.PROB = [0.2, 0.4, 0.4] # proba getting images
 __C_DYN.COLLATE_FN = False
@@ -56,7 +56,7 @@ __C_DYN.SATURATION_JITTER = 0.
 __C_DYN.HUE_JITTER = 0.
 
 __C_DYN.RESUME_MODEL = '/data/models'
-__C_DYN.TRAIN_BATCH_SIZE = 16
+__C_DYN.TRAIN_BATCH_SIZE = 32
 __C_DYN.VAL_BATCH_SIZE = 1
 __C_DYN.PATH_SETTINGS = {
     'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
