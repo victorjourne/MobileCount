@@ -30,11 +30,11 @@ tests_dictionary = {
     },
     "SHHA+SHHB+WE+BKG+JHU": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-            (CustomWE, '/workspace/data/worldExpo10_blurred'),
-            (CustomCCLabeler, '/workspace/cclabeler/'),
-            (CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
-        ],
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomWE, '/workspace/data/worldExpo10_blurred'),
+                            (CustomCCLabeler, '/workspace/cclabeler/'),
+                            (CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
+                            ],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -88,7 +88,7 @@ tests_dictionary = {
     },
     "SHHA+BACKGROUND": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-            (CustomCCLabeler, '/workspace/cclabeler/')],
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -101,7 +101,7 @@ tests_dictionary = {
     },
     "SHHB+BACKGROUND": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-            (CustomCCLabeler, '/workspace/cclabeler/')],
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -114,8 +114,8 @@ tests_dictionary = {
     },
     "SHHA+SHHB+BACKGROUND": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-            (CustomCCLabeler, '/workspace/cclabeler/')],
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -128,7 +128,7 @@ tests_dictionary = {
     },
     "SHHA+SHHB": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/')],
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/')],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -141,9 +141,9 @@ tests_dictionary = {
     },
     "SHHA+SHHB+GCC+BACKGROUND": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-            (CustomGCC, '/workspace/data/GCC'),
-            (CustomCCLabeler, '/workspace/cclabeler/')],
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomGCC, '/workspace/data/GCC'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -156,9 +156,9 @@ tests_dictionary = {
     },
     "SHHA+SHHB+WE+BACKGROUND": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-            (CustomWE, '/workspace/data/worldExpo10_blurred'),
-            (CustomCCLabeler, '/workspace/cclabeler/')],
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomWE, '/workspace/data/worldExpo10_blurred'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -171,10 +171,10 @@ tests_dictionary = {
     },
     "SHHA+SHHB+WE+BACKGROUND+GCC": {
         "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-            (CustomGCC, '/workspace/data/GCC'),
-            (CustomWE, '/workspace/data/worldExpo10_blurred'),
-            (CustomCCLabeler, '/workspace/cclabeler/')],
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomGCC, '/workspace/data/GCC'),
+                            (CustomWE, '/workspace/data/worldExpo10_blurred'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
         "PATH_SETTINGS": {
             'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
             'CC__index_filepath': '/workspace/cclabeler/users/background.json',
@@ -288,4 +288,3 @@ if __name__ == '__main__':
         writer = pd.ExcelWriter(xlsx_file)
         results_df.to_excel(writer, 'results', index=False)
         writer.save()
-
