@@ -12,10 +12,10 @@ __C_DYN.TRAIN_SIZE = (576, 768)  # SHHB sizes (576, 768), WE raw sizes (576, 720
 __C_DYN.LIST_C_DATASETS = [
     #(CustomGCC, '/workspace/data/GCC'),
     (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-    (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-    (CustomWE, '/workspace/data/worldExpo10_blurred'),
+    #(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+    #(CustomWE, '/workspace/data/worldExpo10_blurred'),
     (CustomCCLabeler, '/workspace/cclabeler/'),
-    (CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
+    #(CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
 ]
 
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG

@@ -9,7 +9,7 @@ cfg = __C
 
 # ------------------------------TRAIN------------------------
 __C.SEED = 3035  # random seed,  for reporduction
-__C.DATASET = 'Multiple'  # dataset selection: SHHA, SHHB, UCF50, QNRF, WE, Multiple
+__C.DATASET = 'Multiple'  # dataset selection: SHHA, SHHB, UCF50, QNRF, WE, JHU, Multiple
 
 if __C.DATASET == 'UCF50':  # only for UCF50
     from datasets.UCF50.setting import cfg_data
@@ -21,12 +21,10 @@ if __C.DATASET == 'GCC':  # only for GCC
 
     __C.VAL_MODE = cfg_data.VAL_MODE
 
-__C.NET = 'MobileCountx2'  # net selection: MobileCount, MobileCountx1_25, MobileCountx2
+__C.NET = 'MobileCount'  # net selection: MobileCount, MobileCountx1_25, MobileCountx2
 
 __C.PRE_GCC = True  # use the pretrained model on GCC dataset
-__C.PRE_GCC_MODEL = '/workspace/home/jourdanfa/mobilecount_gcc_relu.pth'
-__C.PRE_GCC_MODEL = '/workspace/share/iafoule/tensorboard/baseline/gcc_mc2/golden_ep_81_mae_57.2_mape_51.8_rmse_149.0_mgape_65.3.pth'
-__C.PRE_GCC_MODEL = '/workspace/share/iafoule/tensorboard/baseline/gcc_mc2/best_state.pth'
+__C.PRE_GCC_MODEL = '/workspace/share/models/mobilecount_gcc_relu.pth'
 
 __C.RESUME = False  # contine training
 __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth'  #
@@ -49,7 +47,7 @@ __C.LR = 1e-4  # learning rate
 __C.LR_DECAY = 0.995  # decay rate
 __C.LR_DECAY_START = -1  # when training epoch is more than it, the learning rate will be begin to decay
 __C.NUM_EPOCH_LR_DECAY = 1  # decay frequency
-__C.MAX_EPOCH = 500
+__C.MAX_EPOCH = 350
 
 # print 
 __C.PRINT_FREQ = 10

@@ -115,16 +115,18 @@ class Trainer:
         self.net.train()
         for i, data in enumerate(self.train_loader, 0):
             self.timer['iter time'].tic()
-            img, gt_map = data
+            img, gt_map, sample_weight = data
+
             img = Variable(img)
             gt_map = Variable(gt_map)
 
             if torch.cuda.is_available():
                 img = img.cuda()
                 gt_map = gt_map.cuda()
+                sample_weight = sample_weight.cuda()
 
             self.optimizer.zero_grad()
-            pred_map = self.net(img, gt_map)
+            pred_map = self.net(img, gt_map, sample_weight)
             loss = self.net.loss
             if isinstance(self.net.lc_loss, int):
                 lc_loss = self.net.lc_loss
@@ -161,7 +163,7 @@ class Trainer:
         mgcaes = AverageMeter()
 
         for vi, data in enumerate(self.val_loader, 0):
-            img, gt_map = data
+            img, gt_map, _ = data
 
             with torch.no_grad():
                 img = Variable(img)
@@ -262,8 +264,8 @@ class Trainer:
         for i_sub, i_loader in enumerate(self.val_loader, 0):
 
             # mask = roi_mask[i_sub]
-            for vi, data in enumerate(i_loader, 0):
-                img, gt_map = data
+            for vi, data, _  in enumerate(i_loader, 0):
+                img, gt_map  = data
 
                 with torch.no_grad():
                     img = Variable(img)
