@@ -41,7 +41,10 @@ class CrowdCounter(nn.Module):
             gt = pool(target.unsqueeze(0))
             c = criterion_L1(est, gt)
             print('c(raw):', c.size())
-            c_mean = torch.mean(c.squeeze(), dim=(1,2)) / s**2
+            if len(list(c.squeeze().size()))==3:
+                c_mean = torch.mean(c.squeeze(), dim=(1,2)) / s**2
+            else:
+                c_mean = torch.mean(c.squeeze()) / s**2
             print('c(mean):', c_mean.size(), c_mean)
             if lc_loss is not None:
                 lc_loss += c_mean 
@@ -69,7 +72,10 @@ class CrowdCounter(nn.Module):
             print('sample_weight:', sample_weight.size(), sample_weight)
         loss_mse = self.loss_mse_fn(density_map, gt_data)
         print('loss_mse(raw):', loss_mse.size())
-        loss_mse = torch.mean(loss_mse, dim=(1,2))
+        if len(list(loss_mse.size()))==3:
+            loss_mse = torch.mean(loss_mse, dim=(1,2))
+        else:
+            loss_mse = torch.mean(loss_mse)
         print('loss_mse(mean):', loss_mse.size(), loss_mse)
         self.lc_loss = 0
         if self.cfg.CUSTOM_LOSS:
