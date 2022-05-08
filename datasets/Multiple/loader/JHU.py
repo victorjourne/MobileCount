@@ -1,9 +1,8 @@
 import glob
-import os
-import pathlib
-
 import numpy as np
+import os
 import pandas as pd
+import pathlib
 from scipy.sparse import load_npz
 
 from .dynamics import CustomDataset
@@ -29,9 +28,8 @@ class CustomJHU(CustomDataset):
         img_list = list(glob.glob(
             os.path.join(self.folder, f'{self.mode}', 'images', '*.jpg')))  # train 2272 images / test 1600 images
 
-
         json_data = {}
-        count=0
+        count = 0
         for n, im in enumerate(img_list):
             filename = os.path.basename(im)
             gt_count = None
@@ -47,10 +45,10 @@ class CustomJHU(CustomDataset):
                 }
                 count += 1
             else:
-                #no .npZ file means no correct points on image
+                # no .npZ file means no correct points on image
                 print("KO")
                 pass
-        print('nb1:', n+1)
+        print('nb1:', n + 1)
         print('nb2:', count)
         df = pd.DataFrame.from_dict(json_data, orient='index')
         print(f'CustomJHU - mode:{self.mode} - df.shape:{df.shape}')

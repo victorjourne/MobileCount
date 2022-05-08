@@ -1,6 +1,5 @@
-import os
-
 import numpy as np
+import os
 from PIL import Image
 from scipy.sparse import load_npz
 from torch.utils import data
