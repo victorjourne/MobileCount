@@ -16,6 +16,7 @@ class CrowdCounter(nn.Module):
             from models.MobileCountx2 import MobileCount as net
         self.cfg = cfg
         self.CCN = net()
+        self.debug=False
         if self.GPU_OK:
             if len(gpus) > 1:
                 self.CCN = torch.nn.DataParallel(self.CCN, device_ids=gpus).cuda()
@@ -40,12 +41,18 @@ class CrowdCounter(nn.Module):
             est = pool(output.unsqueeze(0))
             gt = pool(target.unsqueeze(0))
             c = criterion_L1(est, gt)
-            print('c(raw):', c.size())
+            if self.debug:
+                print('c(raw):', c.size())
+            #Validation [1, 2, 2] ou [1, 4, 4] ou [1, 8, 8]
+            #Train [1, 16, 2, 2] ou [1, 16, 4, 4] ou [1, 16, 8, 8]
             if len(list(c.squeeze().size()))==3:
                 c_mean = torch.mean(c.squeeze(), dim=(1,2)) / s**2
             else:
                 c_mean = torch.mean(c.squeeze()) / s**2
-            print('c(mean):', c_mean.size(), c_mean)
+            if self.debug:
+                print('c(mean):', c_mean.size(), c_mean)
+            #Validation = constant
+            #Train [16]
             if lc_loss is not None:
                 lc_loss += c_mean 
                 #lc_loss += criterion_L1(est, gt) / s**2
@@ -68,30 +75,61 @@ class CrowdCounter(nn.Module):
         return density_map
 
     def build_loss(self, density_map, gt_data, sample_weight=None):
-        if sample_weight is not None:
-            print('sample_weight:', sample_weight.size(), sample_weight)
         loss_mse = self.loss_mse_fn(density_map, gt_data)
-        print('loss_mse(raw):', loss_mse.size())
+        if self.debug:
+            print('loss_mse(raw):', loss_mse.size())
+        #Validation [642, 1000]
+        #Train [16, 576, 768]
         if len(list(loss_mse.size()))==3:
             loss_mse = torch.mean(loss_mse, dim=(1,2))
         else:
             loss_mse = torch.mean(loss_mse)
-        print('loss_mse(mean):', loss_mse.size(), loss_mse)
+        if self.debug:
+            print('loss_mse(mean):', loss_mse.size(), loss_mse)
+        #Validation = constant
+        #Train [16]
         self.lc_loss = 0
         if self.cfg.CUSTOM_LOSS:
             lc_loss = self.compute_lc_loss(density_map, gt_data, sizes=self.cfg.CUSTOM_LOSS_SIZES)
-            print('lc_loss:', lc_loss.size(), lc_loss)
+            if self.debug:
+                print('lc_loss:', lc_loss.size(), lc_loss)
+            #Validation = constant
+            #Train [16]
             self.lc_loss = torch.sum(lc_loss) #just for display
             #loss_mse = loss_mse + (self.cfg.CUSTOM_LOSS_LAMBDA * lc_loss)
             lc_loss = torch.mul(lc_loss, self.cfg.CUSTOM_LOSS_LAMBDA)
-            print('lc_loss(lambda):', lc_loss.size(), lc_loss)
-            loss_mse = loss_mse + torch.mul(lc_loss, self.cfg.CUSTOM_LOSS_LAMBDA)
-        print('loss_mse(mean+lc):', loss_mse.shape, loss_mse)
+            if self.debug:
+                print('lc_loss(lambda):', lc_loss.size(), lc_loss)
+            #Validation = constant
+            #Train [16]
+            loss_mse = loss_mse + lc_loss
+        if self.debug:
+            print('loss_mse(mean+lc):', loss_mse.shape, loss_mse)
+        #Validation = constant
+        #Train [16]
         if sample_weight is not None:
-            loss_mse = torch.mul(loss_mse, sample_weight)
-        print('loss_mse(ponderated):', loss_mse.shape, loss_mse)
-        loss_mse = torch.mean(loss_mse)
-        print('loss_mse(final mean):', loss_mse.shape, loss_mse)
+            if self.debug:
+                print('sample_weight:', sample_weight.size(), sample_weight)
+            a = torch.mul(loss_mse,sample_weight)
+            if self.debug:
+                print('a:', a.size(), a)            
+            b = torch.sum(a)
+            if self.debug:
+                print('b:', b.size(), b)
+            c = torch.sum(sample_weight)
+            if self.debug:
+                print('c:', c.size(), c)
+            loss_mse = b/c
+        else:
+            loss_mse =  torch.mean(loss_mse)
+        if self.debug:
+            print('loss_mse(calculated):', loss_mse.shape, loss_mse)
+        #Validation= constant
+        #Train [16]
+        #loss_mse =  torch.sum(loss_mse)
+        #if self.debug:
+        #    print('loss_mse(final mean):', loss_mse.shape, loss_mse)
+        #Validation & train = constant
         return loss_mse
 
     def test_forward(self, img):
