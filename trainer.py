@@ -163,15 +163,16 @@ class Trainer:
         mgcaes = AverageMeter()
 
         for vi, data in enumerate(self.val_loader, 0):
-            img, gt_map, _ = data
+            img, gt_map, sample_weight = data
 
             with torch.no_grad():
                 img = Variable(img)
                 gt_map = Variable(gt_map)
+                sample_weight = sample_weight.cuda()
                 if torch.cuda.is_available():
                     img = img.cuda()
                     gt_map = gt_map.cuda()
-                pred_map = self.net.forward(img, gt_map)
+                pred_map = self.net.forward(img, gt_map, sample_weight)
                 if torch.cuda.is_available():
                     pred_map = pred_map.data.cpu().numpy()
                     gt_map = gt_map.data.cpu().numpy()
