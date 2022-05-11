@@ -64,6 +64,11 @@ __C_DYN.PATH_SETTINGS = {
     'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
     'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/',
     'JHU__gt_path': '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/',
+    'WE__dataset_weight': 3367/3367,
+    'SHHA__dataset_weight': 3367/300,
+    'SHHB__dataset_weight': 3367/400,
+    'JHU__dataset_weight': 3367/2272,
+    'BG__dataset_weight': 3367/395,
 }
 
 # - GCC :

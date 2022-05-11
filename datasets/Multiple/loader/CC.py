@@ -25,7 +25,7 @@ class CustomCCLabeler(CustomDataset):
             self.gt_path = kwargs.get('BG__gt_path', None)
             self.gt_format = kwargs.get('BG__gt_format', '.json')
             self.transform = kwargs.get('BG__transform', None)
-            self.dataset_weight = kwargs.get('BG__dataset_weight', 10)
+            self.dataset_weight = kwargs.get('BG__dataset_weight', 1)
         elif 'golden' in self.gt_index_filepath:
             self.subset = 'golden'
             self.gt_path = kwargs.get('GD__gt_path', None)            
@@ -34,6 +34,7 @@ class CustomCCLabeler(CustomDataset):
             self.dataset_weight = kwargs.get('GD__dataset_weight', 1)
         else:
             raise NotImplementedError
+        print('dataset_weight:',dataset_weight)
         
         self.folder = folder
         self.mode = mode

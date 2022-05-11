@@ -31,13 +31,14 @@ __C.RESUME_PATH = './exp/04-25_09-19_SHHB_VGG_1e-05/latest_state.pth'  #
 
 if torch.cuda.is_available():
     nb_devices = torch.cuda.device_count()
-    print("nb_devices:", nb_devices)
+    print("nb_gpus:", nb_devices)
     device = torch.cuda.get_device_name(range(nb_devices))
     print("device:", device)
     if nb_devices > 1:
         __C.GPU_ID = [int(i) for i in range(torch.cuda.device_count())]
     else:
         __C.GPU_ID = [0]
+    __C.GPU_ID = [0]
 else:
     __C.GPU_ID = []
 print("__C.GPU_ID:", __C.GPU_ID)
@@ -85,6 +86,7 @@ __C.L1_LOSS_REDUCTION = "mean"
 __C.CUSTOM_LOSS = True
 __C.CUSTOM_LOSS_LAMBDA = 10
 __C.CUSTOM_LOSS_SIZES = (2, 4, 8)
+
 
 __C.TEXTS2ADD = ''
 # ================================================================================
