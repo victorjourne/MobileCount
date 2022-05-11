@@ -29,7 +29,7 @@ class CustomSHH(CustomDataset):
             self.dataset_weight = kwargs.get('SHHB__dataset_weight', 1)
         else:
             raise ValueError('Choose a path with SHH part A or SHH part B')
-        print('dataset_weight:',dataset_weight)
+        print('dataset_weight:',self.dataset_weight)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()

@@ -16,7 +16,7 @@ class CustomWE(CustomDataset):
         self.gt_format = kwargs.get('WE__gt_format', '.csv')
         self.transform = kwargs.get('WE__transform', None)
         self.dataset_weight = kwargs.get('WE__dataset_weight', 1)
-        print('dataset_weight:',dataset_weight)
+        print('dataset_weight:',self.dataset_weight)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()

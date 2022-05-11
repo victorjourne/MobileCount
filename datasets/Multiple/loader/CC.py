@@ -34,7 +34,7 @@ class CustomCCLabeler(CustomDataset):
             self.dataset_weight = kwargs.get('GD__dataset_weight', 1)
         else:
             raise NotImplementedError
-        print('dataset_weight:',dataset_weight)
+        print('dataset_weight:',self.dataset_weight)
         
         self.folder = folder
         self.mode = mode

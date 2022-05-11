@@ -17,7 +17,7 @@ class CustomJHU(CustomDataset):
         if self.gt_path is None:
             raise ValueError('Must specify `JHU__gt_path` parameter')
         self.dataset_weight = kwargs.get('JHU__dataset_weight', 1)
-        print('dataset_weight:',dataset_weight)
+        print('dataset_weight:',self.dataset_weight)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()

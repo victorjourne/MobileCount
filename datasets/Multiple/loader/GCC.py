@@ -18,7 +18,7 @@ class CustomGCC(CustomDataset):
         if self.gt_folder is None:
             raise ValueError('Must specify `GCC__gt_folder` parameter')
         self.dataset_weight = kwargs.get('GCC__dataset_weight', 1)
-        print('dataset_weight:',dataset_weight)
+        print('dataset_weight:',self.dataset_weight)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()
