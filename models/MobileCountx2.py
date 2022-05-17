@@ -33,7 +33,7 @@ class CRPBlock(nn.Module):
 
     def __init__(self, in_planes, out_planes, n_stages):
         super(CRPBlock, self).__init__()
-        for i in xrange(n_stages):
+        for i in range(n_stages):
             setattr(self, '{}_{}'.format(i + 1, 'outvar_dimred'),
                     conv1x1(in_planes if (i == 0) else out_planes,
                             out_planes, stride=1,
@@ -44,7 +44,7 @@ class CRPBlock(nn.Module):
 
     def forward(self, x):
         top = x
-        for i in xrange(self.n_stages):
+        for i in range(self.n_stages):
             top = self.maxpool(top)
             top = getattr(self, '{}_{}'.format(i + 1, 'outvar_dimred'))(top)
             x = top + x
@@ -229,7 +229,8 @@ class MobileCount(nn.Module):
         x4 = self.mflow_conv_g1_pool(x4)
         x4 = self.mflow_conv_g1_b3_joint_varout_dimred(x4)
         x4 = nn.Upsample(size=l3.size()[2:], mode='bilinear')(x4)
-
+        x4 = F.relu(x4) # ADDED
+        
         l3 = self.dropout3(l3)
         x3 = self.p_ims1d2_outl2_dimred(l3)
         x3 = self.adapt_stage2_b2_joint_varout_dimred(x3)
@@ -238,7 +239,8 @@ class MobileCount(nn.Module):
         x3 = self.mflow_conv_g2_pool(x3)
         x3 = self.mflow_conv_g2_b3_joint_varout_dimred(x3)
         x3 = nn.Upsample(size=l2.size()[2:], mode='bilinear')(x3)
-
+        x3 = F.relu(x3) # ADDED
+        
         x2 = self.p_ims1d2_outl3_dimred(l2)
         x2 = self.adapt_stage3_b2_joint_varout_dimred(x2)
         x2 = x2 + x3
@@ -246,7 +248,8 @@ class MobileCount(nn.Module):
         x2 = self.mflow_conv_g3_pool(x2)
         x2 = self.mflow_conv_g3_b3_joint_varout_dimred(x2)
         x2 = nn.Upsample(size=l1.size()[2:], mode='bilinear')(x2)
-
+        x2 = F.relu(x2) # ADDED
+        
         x1 = self.p_ims1d2_outl4_dimred(l1)
         x1 = self.adapt_stage4_b2_joint_varout_dimred(x1)
         x1 = x1 + x2
@@ -257,7 +260,7 @@ class MobileCount(nn.Module):
         out = self.clf_conv(x1)
 
         out = F.upsample(out, size=size1, mode='bilinear')
-
+        out = F.relu(out) # ADDED
         return out
 
 
