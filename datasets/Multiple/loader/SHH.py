@@ -1,12 +1,14 @@
-import pandas as pd
 import glob
-import numpy as np
-import logging as lg
 import os
 import pathlib
-from scipy.sparse import load_npz
-from .dynamics import CustomDataset
+
 import h5py
+import numpy as np
+import pandas as pd
+from scipy.sparse import load_npz
+
+from .dynamics import CustomDataset
+
 
 class CustomSHH(CustomDataset):
     def __init__(self, folder, mode, **kwargs):
@@ -14,16 +16,22 @@ class CustomSHH(CustomDataset):
         Load Custom SHH
         """
         super().__init__()
+        self.subset = ''
         if '_A_' in folder:
-            self.gt_name_folder = kwargs.get('SHHA__gt_name_folder', 'maps_adaptive_kernel') 
+            self.subset = 'SHHA'
+            self.gt_name_folder = kwargs.get('SHHA__gt_name_folder', 'maps_adaptive_kernel')
             self.gt_format = kwargs.get('SHHA__gt_format', '.h5')
             self.transform = kwargs.get('SHHA__transform', None)
+            self.dataset_weight = kwargs.get('SHHA__dataset_weight', 1)
         elif '_B_' in folder:
-            self.gt_name_folder = kwargs.get('SHHB__gt_name_folder', 'maps_fixed_kernel') 
+            self.subset = 'SHHB'
+            self.gt_name_folder = kwargs.get('SHHB__gt_name_folder', 'maps_fixed_kernel')
             self.gt_format = kwargs.get('SHHB__gt_format', '.h5')
             self.transform = kwargs.get('SHHB__transform', None)
+            self.dataset_weight = kwargs.get('SHHB__dataset_weight', 1)
         else:
             raise ValueError('Choose a path with SHH part A or SHH part B')
+        print('dataset_weight:', self.dataset_weight)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()
@@ -32,7 +40,7 @@ class CustomSHH(CustomDataset):
         """
         Read all images position in SSHB Dataset
         """
-        img_list = list(filter(lambda x: '.txt' not in x and '.zip' not in x, 
+        img_list = list(filter(lambda x: '.txt' not in x and '.zip' not in x,
                                glob.glob(os.path.join(self.folder, f'{self.mode}_data', 'images', '*'))))
         gt_folder = os.path.join(self.folder, f'{self.mode}_data', self.gt_name_folder)
         json_data = {}
@@ -40,14 +48,16 @@ class CustomSHH(CustomDataset):
             filename = pathlib.Path(im).stem
             gt_count = None
             json_data[n] = {
-                            "path_img": im,
-                            "path_gt": os.path.join(gt_folder, filename + self.gt_format),
-                            "gt_count": gt_count,
-                            "folder": self.folder
-                            }
+                "path_img": im,
+                "path_gt": os.path.join(gt_folder, filename + self.gt_format),
+                "gt_count": gt_count,
+                "folder": self.folder,
+                "sample_weight": self.dataset_weight,
+            }
         df = pd.DataFrame.from_dict(json_data, orient='index')
+        print(f'CustomSHH - subset:{self.subset} - mode:{self.mode} - df.shape:{df.shape}')
         return df
-            
+
     def load_gt(self, filename):
         """
         Load GT in np.array
@@ -58,6 +68,6 @@ class CustomSHH(CustomDataset):
         elif pathlib.Path(filename).suffix == '.h5':
             gt_file = h5py.File(filename)
             density_map = np.asarray(gt_file['density'])
-    
+
         self.check_density_map(density_map)
         return density_map
