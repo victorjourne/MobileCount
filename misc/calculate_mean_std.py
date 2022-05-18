@@ -1,18 +1,19 @@
+import os
 import sys
+import time
+
+import numpy as np
+import pandas as pd
+import torchvision.transforms as standard_transforms
+from torch.utils.data import DataLoader
+
+import misc.transforms as own_transforms
 
 sys.path.append("../")
 sys.path.append("../../ia-foule-lab")
 
-import os
-import time
-import numpy as np
-import pandas as pd
-import torchvision.transforms as standard_transforms
-import misc.transforms as own_transforms
-from torch.utils.data import DataLoader
-
 from datasets.Multiple.loader import DynamicDataset
-from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH
+from datasets.Multiple.loader import CustomCCLabeler, CustomGCC, CustomSHH, CustomWE, CustomJHU
 from datasets.Multiple.settings import cfg_data
 
 from iafoule.utils import get_mean_and_std_by_channel
@@ -22,73 +23,173 @@ beginning_time = time.time()
 # Test de recalcul des mean std des images de ShangaiTechA et B, change the list below and run the python script
 output_directory = "/workspace/home/jourdanfa/data/"
 tests_dictionary = {
-    "SHHA": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/')],
-             "VAL_BATCH_SIZE": 1,
-             "MEAN_STD_REFERENCE": (
-                 [0.410824894905, 0.370634973049, 0.359682112932], [0.278580576181, 0.26925137639, 0.27156367898]),
-             "RECALCULATE": True
-             },
-    "SHHB": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/')],
-             "VAL_BATCH_SIZE": 1,
-             "MEAN_STD_REFERENCE": (
-                 [0.452016860247, 0.447249650955, 0.431981861591], [0.23242045939, 0.224925786257, 0.221840232611]),
-             "RECALCULATE": True
-             },
-    "GCC": {"LIST_C_DATASETS": [(CustomGCC, '/workspace/data/GCC')],
-            "PATH_SETTINGS": {'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/'},
-            "VAL_BATCH_SIZE": 1,
-            "MEAN_STD_REFERENCE": (
-                [0.302234709263, 0.291243076324, 0.269087553024], [0.227743327618, 0.211051672697, 0.184846073389]),
-            "RECALCULATE": True
-            },
-    "BACKGROUND": {"LIST_C_DATASETS": [(CustomCCLabeler, '/workspace/cclabeler/')],
-                   "PATH_SETTINGS": {'CC__index_filepath': '/workspace/cclabeler/users/background.json'},
-                   "VAL_BATCH_SIZE": 1,
-                   "MEAN_STD_REFERENCE": ([0.45974886, 0.46210667, 0.46128407], [0.2600742, 0.2610275, 0.28212664]),
-                   "RECALCULATE": True
-                   },
-    "SHHA+BACKGROUND": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-                                            (CustomCCLabeler, '/workspace/cclabeler/')],
-                                 "PATH_SETTINGS": {'CC__index_filepath': '/workspace/cclabeler/users/background.json'},
-                                 "VAL_BATCH_SIZE": 1,
-                                 "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": True
-                                 },
-    "SHHB+BACKGROUND": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-                                            (CustomCCLabeler, '/workspace/cclabeler/')],
-                                 "PATH_SETTINGS": {'CC__index_filepath': '/workspace/cclabeler/users/background.json'},
-                                 "VAL_BATCH_SIZE": 1,
-                                 "MEAN_STD_REFERENCE":  ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": True
-                                 },
-    "SHHA+SHHB+BACKGROUND": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-                                                 (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-                                                 (CustomCCLabeler, '/workspace/cclabeler/')],
-                                 "PATH_SETTINGS": {'CC__index_filepath': '/workspace/cclabeler/users/background.json'},
-                                 "VAL_BATCH_SIZE": 1,
-                                 "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": True
-                                 },
-    "SHHA+SHHB": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-                                      (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/')],
-                                 "PATH_SETTINGS": {'CC__index_filepath': '/workspace/cclabeler/users/background.json'},
-                                 "VAL_BATCH_SIZE": 1,
-                                 "MEAN_STD_REFERENCE":  ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": True
-                                 },
-    "SHHA+SHHB+GCC+BACKGROUND": {"LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
-                                                     (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
-                                                     (CustomGCC, '/workspace/data/GCC'),
-                                                     (CustomCCLabeler, '/workspace/cclabeler/')],
-                                 "PATH_SETTINGS": {'CC__index_filepath': '/workspace/cclabeler/users/background.json',
-                                                  'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/'},
-                                 "VAL_BATCH_SIZE": 1,
-                                 "MEAN_STD_REFERENCE":  ([1., 1., 1.], [1., 1., 1.]),
-                                 "RECALCULATE": True
-                                 },
+    "JHU": {
+        "LIST_C_DATASETS": [(CustomJHU, '/workspace/data/jhu_crowd_v2.0/')],
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([0.4339488, 0.39700276, 0.38843033], [0.28619412, 0.27814415, 0.28290176]),
+        "RECALCULATE": True,
+    },
+    "SHHA+SHHB+WE+BKG+JHU": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomWE, '/workspace/data/worldExpo10_blurred'),
+                            (CustomCCLabeler, '/workspace/cclabeler/'),
+                            (CustomJHU, '/workspace/data/jhu_crowd_v2.0/'),
+                            ],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/',
+            'JHU__gt_path': '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/',
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": (
+            [0.47029132, 0.45914084, 0.45185772], [0.24948487, 0.24923775, 0.25277084]),
+        "RECALCULATE": True,
+    },
+    "SHHA": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/')],
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": (
+            [0.410824894905, 0.370634973049, 0.359682112932], [0.278580576181, 0.26925137639, 0.27156367898]),
+        "RECALCULATE": False
+    },
+    "SHHB": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/')],
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": (
+            [0.452016860247, 0.447249650955, 0.431981861591], [0.23242045939, 0.224925786257, 0.221840232611]),
+        "RECALCULATE": False
+    },
+    "GCC": {
+        "LIST_C_DATASETS": [(CustomGCC, '/workspace/data/GCC')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": (
+            [0.302234709263, 0.291243076324, 0.269087553024], [0.227743327618, 0.211051672697, 0.184846073389]),
+        "RECALCULATE": False
+    },
+    "BACKGROUND": {
+        "LIST_C_DATASETS": [(CustomCCLabeler, '/workspace/cclabeler/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([0.45974886, 0.46210667, 0.46128407], [0.2600742, 0.2610275, 0.28212664]),
+        "RECALCULATE": False
+    },
+    "SHHA+BACKGROUND": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
+        "RECALCULATE": False
+    },
+    "SHHB+BACKGROUND": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
+        "RECALCULATE": False
+    },
+    "SHHA+SHHB+BACKGROUND": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
+        "RECALCULATE": False
+    },
+    "SHHA+SHHB": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
+        "RECALCULATE": False
+    },
+    "SHHA+SHHB+GCC+BACKGROUND": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomGCC, '/workspace/data/GCC'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
+        "RECALCULATE": False
+    },
+    "SHHA+SHHB+WE+BACKGROUND": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomWE, '/workspace/data/worldExpo10_blurred'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
+        "RECALCULATE": False
+    },
+    "SHHA+SHHB+WE+BACKGROUND+GCC": {
+        "LIST_C_DATASETS": [(CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
+                            (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
+                            (CustomGCC, '/workspace/data/GCC'),
+                            (CustomWE, '/workspace/data/worldExpo10_blurred'),
+                            (CustomCCLabeler, '/workspace/cclabeler/')],
+        "PATH_SETTINGS": {
+            'GCC__gt_folder': '/workspace/home/gameiroth/data/GCC/density/maps_adaptive_kernel/',
+            'CC__index_filepath': '/workspace/cclabeler/users/background.json',
+            'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
+            'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/'
+        },
+        "VAL_BATCH_SIZE": 1,
+        "MEAN_STD_REFERENCE": ([1., 1., 1.], [1., 1., 1.]),
+        "RECALCULATE": False
+    },
 }
 
-# The image should be preprocessed by torch.transform.ToTensor(), so the value is in [0,1] (all pixels values are divided by 255)
+# The image should be preprocessed by torch.transform.ToTensor()
+# so the value is in [0,1] (all pixels values are divided by 255)
 img_transform = standard_transforms.Compose([
     standard_transforms.ToTensor()
 ])
@@ -118,7 +219,7 @@ if __name__ == '__main__':
                                      main_transform=None,
                                      img_transform=img_transform,
                                      gt_transform=gt_transform,
-                                     image_size=(1024, 768),
+                                     image_size=(576, 768),
                                      **path_settings)
 
             val_loader = DataLoader(val_set,
@@ -189,4 +290,3 @@ if __name__ == '__main__':
         writer = pd.ExcelWriter(xlsx_file)
         results_df.to_excel(writer, 'results', index=False)
         writer.save()
-
