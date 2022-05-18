@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from datasets.Multiple.loader import CustomCCLabeler, CustomSHH, CustomWE, CustomGCC, CustomJHU
+from datasets.Multiple.loader import CustomCCLabeler, CustomSHH, CustomWE, CustomJHU
 
 # init
 __C_DYN = edict()
@@ -10,7 +10,7 @@ cfg_data = __C_DYN
 __C_DYN.IMAGE_SIZE = None
 __C_DYN.TRAIN_SIZE = (576, 768)  # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
 __C_DYN.LIST_C_DATASETS = [
-    #(CustomGCC, '/workspace/data/GCC'),
+    # (CustomGCC, '/workspace/data/GCC'),
     (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
     (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
     (CustomWE, '/workspace/data/worldExpo10_blurred'),
@@ -25,7 +25,7 @@ __C_DYN.LIST_C_DATASETS = [
 # __C_DYN.MEAN_STD = ([0.3220204, 0.31172827, 0.2942992], [0.23350126, 0.21823345, 0.19834155]) # SHHA+SHHB+GCC+BKG
 # __C_DYN.MEAN_STD = ([0.4355689, 0.41689757, 0.41106898], [0.27048737, 0.26903987, 0.28157565]) # SHHA+BKG
 # __C_DYN.MEAN_STD = ([0.48879814, 0.4907805, 0.4841541], [0.22630496, 0.22669446, 0.22931112]) # SHHA+SHHB+WE+BKG
-__C_DYN.MEAN_STD = ([0.47024578, 0.45909372, 0.45179337], [0.24947935, 0.24922241, 0.25274596]) # SHHA+SHHB+WE+BKG+JHU
+__C_DYN.MEAN_STD = ([0.47024578, 0.45909372, 0.45179337], [0.24947935, 0.24922241, 0.25274596])  # SHHA+SHHB+WE+BKG+JHU
 # __C_DYN.MEAN_STD = ([2.773511643408064, 2.826134968653417, 2.950241408655753], [4.145412486952323, 4.30860565292724, 4.555158225362852]) # SHHA+SHHB+WE+BKG+GCC
 # Rappel
 # SHHA
@@ -64,11 +64,11 @@ __C_DYN.PATH_SETTINGS = {
     'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
     'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/',
     'JHU__gt_path': '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/',
-    'WE__dataset_weight': 3367/3367,
-    'SHHA__dataset_weight': 3367/300,
-    'SHHB__dataset_weight': 3367/400,
-    'JHU__dataset_weight': 3367/2272,
-    'BG__dataset_weight': 3367/395,
+    'WE__dataset_weight': 1,
+    'SHHA__dataset_weight': 1,
+    'SHHB__dataset_weight': 1,
+    'JHU__dataset_weight': 1,
+    'BG__dataset_weight': 10,
 }
 
 # - GCC :

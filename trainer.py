@@ -1,7 +1,5 @@
 import sys
 
-sys.path.append("../ia-foule-lab/")
-import shutil
 from torch import optim
 from torch.autograd import Variable
 from torch.optim.lr_scheduler import StepLR
@@ -9,6 +7,7 @@ from torch.optim.lr_scheduler import StepLR
 from misc.utils import *
 from models.CC import CrowdCounter
 
+sys.path.append("../ia-foule-lab/")
 from iafoule.metrics import get_metrics, get_metrics_with_points
 
 
@@ -94,13 +93,12 @@ class Trainer:
             # validation
             if epoch % self.cfg.VAL_FREQ == 0 or epoch > self.cfg.VAL_DENSE_START:
                 self.timer['val time'].tic()
-                best_model = False
-                if self.data_mode in ['SHHA', 'SHHB', 'QNRF', 'UCF50', 'Multiple', 'JHU']:
-                    best_model = self.validate_v1()
-                elif self.data_mode == 'WE':
+                if self.data_mode == 'WE':
                     best_model = self.validate_v2()
                 elif self.data_mode == 'GCC':
                     best_model = self.validate_v3()
+                else:  # self.data_mode in ['SHHA', 'SHHB', 'QNRF', 'UCF50', 'Multiple', 'JHU' and other]:
+                    best_model = self.validate_v1()
                 self.timer['val time'].toc(average=False)
                 print('val time: {:.2f}s'.format(self.timer['val time'].diff))
 
@@ -181,8 +179,8 @@ class Trainer:
                     gt_map = gt_map.data.numpy()
 
                 for i_img in range(pred_map.shape[0]):
-                    pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
-                    gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
+                    # pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
+                    # gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
 
                     losses.update(self.net.loss.item())
 
@@ -256,7 +254,6 @@ class Trainer:
         mgcaes = AverageCategoryMeter(5)
 
         # roi_mask = []
-        from datasets.WE.setting import cfg_data
         # from scipy import io as sio
         # for val_folder in cfg_data.VAL_FOLDER:
         #    roi_mask.append(sio.loadmat(os.path.join(cfg_data.DATA_PATH, 'test', val_folder + '_roi.mat'))['BW'])
@@ -285,8 +282,8 @@ class Trainer:
                         gt_map = gt_map.data.numpy()
 
                     for i_img in range(pred_map.shape[0]):
-                        pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
-                        gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
+                        # pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
+                        # gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
 
                         # losses.update(self.net.loss.item(), i_sub)
                         # maes.update(abs(gt_count - pred_cnt), i_sub)
@@ -337,8 +334,16 @@ class Trainer:
         self.writer.add_scalar('mgape', mgape, self.epoch + 1)
         self.writer.add_scalar('mgcae', mgcae, self.epoch + 1)
 
-        # self.train_record = update_model(self.net, self.optimizer, self.scheduler, self.epoch, self.i_tb, self.exp_path,
-        #                                 self.exp_name,[mae, 0, 0, 0, 0, loss], self.train_record, self.log_txt)
+        # self.train_record = update_model(self.net,
+        #                                  self.optimizer,
+        #                                  self.scheduler,
+        #                                  self.epoch,
+        #                                  self.i_tb,
+        #                                  self.exp_path,
+        #                                  self.exp_name,
+        #                                  [mae, 0, 0, 0, 0, loss],
+        #                                  self.train_record,
+        #                                  self.log_txt)
 
         best_model = False
         best_metric = 'best_mae'
@@ -471,10 +476,10 @@ class Trainer:
                     pred_map = pred_map.data.numpy()
 
                 for i_img in range(pred_map.shape[0]):
-                    pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
-
-                    width = img.shape[3]
-                    height = img.shape[2]
+                    # pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
+                    #
+                    # width = img.shape[3]
+                    # height = img.shape[2]
                     ground_truth = [(point['x'].item(), point['y'].item()) for point in gt_points]
                     metric_grids = [(4, 4)]
                     metrics = get_metrics_with_points(pred_map[i_img].squeeze() / self.cfg.LOG_PARA,
@@ -540,7 +545,7 @@ class Trainer:
 
         if self.cfg.STORE_MODEL_AFTER_GOLDEN_INFERENCE:
             filename = 'golden_ep_%d_mae_%.1f_mape_%.1f_rmse_%.1f_mgape_%.1f' % (
-            self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
+                self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
             filename += '.pth'
             shutil.copyfile(os.path.join(self.exp_path, self.exp_name, 'best_state.pth'),
                             os.path.join(self.exp_path, self.exp_name, filename))

@@ -1,8 +1,8 @@
 import glob
-import numpy as np
 import os
+
+import numpy as np
 import pandas as pd
-import pathlib
 from scipy.sparse import load_npz
 
 from .dynamics import CustomDataset
@@ -17,7 +17,7 @@ class CustomJHU(CustomDataset):
         if self.gt_path is None:
             raise ValueError('Must specify `JHU__gt_path` parameter')
         self.dataset_weight = kwargs.get('JHU__dataset_weight', 1)
-        print('dataset_weight:',self.dataset_weight)
+        print('dataset_weight:', self.dataset_weight)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()
@@ -30,11 +30,11 @@ class CustomJHU(CustomDataset):
             os.path.join(self.folder, f'{self.mode}', 'images', '*.jpg')))  # train 2272 images / test 1600 images
 
         json_data = {}
+        n = -1
         count = 0
         for n, im in enumerate(img_list):
             filename = os.path.basename(im)
             gt_count = None
-            sub_directory = self.mode
             path_gt = os.path.join(self.gt_path, self.mode, 'dm', filename + '.npz')
             if os.path.isfile(path_gt):
                 json_data[n] = {

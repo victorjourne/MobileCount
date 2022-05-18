@@ -1,4 +1,5 @@
 import os
+import sys
 import time
 from itertools import product
 
@@ -7,10 +8,13 @@ import torch
 
 from grid_config import cfg_grid
 
+sys.path.append("..")
+sys.path.append("../ia-foule-lab/")
 
-def grid_parameters(parameters):
-    for params in product(*parameters.values()):
-        yield dict(zip(parameters.keys(), params))
+
+def grid_parameters(pars):
+    for params in product(*pars.values()):
+        yield dict(zip(pars.keys(), params))
 
 
 # ------------Grid Train------------
@@ -38,6 +42,9 @@ if __name__ == '__main__':
                 cfg[cfg_key] = parameters[cfg_key]
 
         now = time.strftime("%d%m_%H%M", time.localtime())
+
+        # You must define your cfg['EXP_NAME'] in function of you specific use case
+
         # net_type = 'MC'
         # if cfg.NET=='MobileCountx1_25':
         #    net_type = 'MC125'
@@ -59,8 +66,9 @@ if __name__ == '__main__':
         # cfg['EXP_NAME'] = EXP_NAME.replace(' ','')
         # train_size = parameters['TRAIN_SIZE']
         # str_train_size = str(train_size[0]) + 'x' + str(train_size[1])
-        cfg['EXP_NAME'] ='WE_' + parameters['PATH_SETTINGS']['WE__transform_description']
+        cfg['EXP_NAME'] = 'WE_' + parameters['PATH_SETTINGS']['WE__transform_description']
         # cfg['EXP_NAME'] = 'SHHA+SHHB+WE+BACKGROUND'
+
         # ------------prepare environment------------
         seed = cfg.SEED
         if seed is not None:
@@ -90,15 +98,16 @@ if __name__ == '__main__':
             from datasets.GCC.setting import cfg_data
         elif data_mode == 'Multiple':
             from datasets.Multiple.settings import cfg_data
-            
+
         for cfg_key in cfg_data:
             if cfg_key in parameters:
-                if cfg_key!='PATH_SETTINGS':
+                if cfg_key != 'PATH_SETTINGS':
                     print("\nDataset parameters overload - ", cfg_key, ':', parameters[cfg_key])
                     cfg_data[cfg_key] = parameters[cfg_key]
                 else:
                     for path_settings_key in parameters['PATH_SETTINGS']:
-                        print("\nPath settings overload - ", path_settings_key, ':',parameters['PATH_SETTINGS'][path_settings_key])
+                        print("\nPath settings overload - ", path_settings_key, ':',
+                              parameters['PATH_SETTINGS'][path_settings_key])
                         cfg_data['PATH_SETTINGS'][path_settings_key] = parameters['PATH_SETTINGS'][path_settings_key]
 
         if data_mode == 'SHHA':
@@ -115,7 +124,7 @@ if __name__ == '__main__':
             from datasets.GCC.loading_data import loading_data
         elif data_mode == 'Multiple':
             from datasets.Multiple.loading_data import loading_data
-            
+
         cfg_complete = cfg
         cfg_complete.update(cfg_data)
         cfg_complete.update(parameters)
@@ -126,5 +135,5 @@ if __name__ == '__main__':
 
         from trainer import Trainer
 
-        #cc_trainer = Trainer(loading_data, cfg_complete, pwd)
-        #cc_trainer.forward()
+        cc_trainer = Trainer(loading_data, cfg_complete, pwd)
+        cc_trainer.forward()

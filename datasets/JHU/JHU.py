@@ -1,5 +1,6 @@
-import numpy as np
 import os
+
+import numpy as np
 from PIL import Image
 from scipy.sparse import load_npz
 from torch.utils import data
@@ -10,7 +11,7 @@ class JHU(data.Dataset):
         self.img_path = data_path + '/images'
         gt_directory = '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/' + mode + '/'
         self.gt_path = gt_directory + '/dm'
-        data_files = [filename for filename in os.listdir(self.img_path) \
+        data_files = [filename for filename in os.listdir(self.img_path)
                       if os.path.isfile(os.path.join(self.img_path, filename))]
         print('nb1:', len(data_files))
         self.data_files = []
@@ -55,5 +56,5 @@ class JHU(data.Dataset):
     def get_num_samples(self):
         return self.num_samples
 
-    def load_sparse(self, filename):
-        return load_npz(filename).toarray()
+    # def load_sparse(self, filename):
+    #     return load_npz(filename).toarray()

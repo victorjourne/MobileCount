@@ -1,4 +1,3 @@
-import misc.transforms as own_transforms
 import torchvision.transforms as standard_transforms
 from torch.utils.data import DataLoader
 
@@ -50,7 +49,6 @@ def loading_data():
 
     train_main_transform_GCC = own_transforms.Compose([
         own_transforms.RandomCrop(cfg_data.TRAIN_SIZE),
-        # own_transforms.RandomDownOverSampling(3),
         own_transforms.RandomHorizontallyFlip()
     ])
 
