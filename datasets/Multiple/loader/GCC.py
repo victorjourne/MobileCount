@@ -1,10 +1,9 @@
-import pandas as pd
-import glob
 import os
-import numpy as np
-import logging as lg
 import pathlib
+
+import pandas as pd
 from scipy.sparse import load_npz
+
 from .dynamics import CustomDataset
 
 
@@ -17,6 +16,8 @@ class CustomGCC(CustomDataset):
         self.transform = kwargs.get('GCC__transform', None)
         if self.gt_folder is None:
             raise ValueError('Must specify `GCC__gt_folder` parameter')
+        self.dataset_weight = kwargs.get('GCC__dataset_weight', 1)
+        print('dataset_weight:', self.dataset_weight)
         self.folder = folder
         self.mode = mode
         self.dataset = self.read_index()
@@ -28,15 +29,16 @@ class CustomGCC(CustomDataset):
         json_data = {}
         for n, line in enumerate(lines):
             crowd_level, time, weather, file_folder, filename, gt_count = line.strip().split()
-            json_data[n] = {
-                            "path_img": os.path.join(self.folder, 
+            json_data[n] = {"path_img": os.path.join(self.folder,
                                                      pathlib.Path(file_folder).stem, 
                                                      'pngs', filename + '.png'),
-                           "path_gt": os.path.join(self.gt_folder, filename) + self.gt_format,
-                           "gt_count": gt_count,
-                           "folder": self.folder
+                            "path_gt": os.path.join(self.gt_folder, filename) + self.gt_format,
+                            "gt_count": gt_count,
+                            "folder": self.folder,
+                            "sample_weight": self.dataset_weight,
                             }
         df = pd.DataFrame.from_dict(json_data, orient='index')
+        print(f'CustomGCC - mode:{self.mode} - df.shape:{df.shape}')
         return df
     
     def load_gt(self, filename):

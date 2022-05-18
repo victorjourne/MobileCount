@@ -1,6 +1,5 @@
 import sys
 
-sys.path.append("../ia-foule-lab/")
 from torch import optim
 from torch.autograd import Variable
 from torch.optim.lr_scheduler import StepLR
@@ -8,6 +7,7 @@ from torch.optim.lr_scheduler import StepLR
 from misc.utils import *
 from models.CC import CrowdCounter
 
+sys.path.append("../ia-foule-lab/")
 from iafoule.metrics import get_metrics, get_metrics_with_points
 
 
@@ -50,7 +50,12 @@ class Trainer:
         self.i_tb = 0
 
         if cfg.PRE_GCC:
-            self.net.load_state_dict(torch.load(cfg.PRE_GCC_MODEL))
+            # self.net.load_state_dict(torch.load(cfg.PRE_GCC_MODEL))
+            print("cfg.PRE_GCC_MODEL:", cfg.PRE_GCC_MODEL)
+            model_dict = torch.load(cfg.PRE_GCC_MODEL)
+            if 'net' in model_dict:
+                model_dict = model_dict['net']
+            self.net.load_state_dict(model_dict)
 
         self.train_loader, self.val_loader, self.restore_transform = dataloader()
 
@@ -88,13 +93,12 @@ class Trainer:
             # validation
             if epoch % self.cfg.VAL_FREQ == 0 or epoch > self.cfg.VAL_DENSE_START:
                 self.timer['val time'].tic()
-                best_model = False
-                if self.data_mode in ['SHHA', 'SHHB', 'QNRF', 'UCF50', 'Multiple']:
-                    best_model = self.validate_v1()
-                elif self.data_mode == 'WE':
+                if self.data_mode == 'WE':
                     best_model = self.validate_v2()
                 elif self.data_mode == 'GCC':
                     best_model = self.validate_v3()
+                else:  # self.data_mode in ['SHHA', 'SHHB', 'QNRF', 'UCF50', 'Multiple', 'JHU' and other]:
+                    best_model = self.validate_v1()
                 self.timer['val time'].toc(average=False)
                 print('val time: {:.2f}s'.format(self.timer['val time'].diff))
 
@@ -109,16 +113,18 @@ class Trainer:
         self.net.train()
         for i, data in enumerate(self.train_loader, 0):
             self.timer['iter time'].tic()
-            img, gt_map = data
+            img, gt_map, sample_weight = data
+
             img = Variable(img)
             gt_map = Variable(gt_map)
 
             if torch.cuda.is_available():
                 img = img.cuda()
                 gt_map = gt_map.cuda()
+                sample_weight = sample_weight.cuda()
 
             self.optimizer.zero_grad()
-            pred_map = self.net(img, gt_map)
+            pred_map = self.net(img, gt_map, sample_weight)
             loss = self.net.loss
             if isinstance(self.net.lc_loss, int):
                 lc_loss = self.net.lc_loss
@@ -155,16 +161,16 @@ class Trainer:
         mgcaes = AverageMeter()
 
         for vi, data in enumerate(self.val_loader, 0):
-            img, gt_map = data
+            img, gt_map, sample_weight = data
 
             with torch.no_grad():
                 img = Variable(img)
                 gt_map = Variable(gt_map)
-
+                sample_weight = sample_weight.cuda()
                 if torch.cuda.is_available():
                     img = img.cuda()
                     gt_map = gt_map.cuda()
-                pred_map = self.net.forward(img, gt_map)
+                pred_map = self.net.forward(img, gt_map, sample_weight)
                 if torch.cuda.is_available():
                     pred_map = pred_map.data.cpu().numpy()
                     gt_map = gt_map.data.cpu().numpy()
@@ -173,24 +179,23 @@ class Trainer:
                     gt_map = gt_map.data.numpy()
 
                 for i_img in range(pred_map.shape[0]):
-                    pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
-                    gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
+                    # pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
+                    # gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
 
                     losses.update(self.net.loss.item())
-                    
+
                     metric_grids = [(4, 4)]
                     metrics = get_metrics(pred_map[i_img].squeeze() / self.cfg.LOG_PARA,
-                                        gt_map[i_img] / self.cfg.LOG_PARA, 
-                                        metric_grids=metric_grids)
-                        
+                                          gt_map[i_img] / self.cfg.LOG_PARA,
+                                          metric_grids=metric_grids)
+
                     maes.update(metrics['absolute_error'])
                     mapes.update(metrics['absolute_percentage_error'])
                     mses.update(metrics['squared_error'])
                     mgapes.update(metrics['grid4x4_absolute_percentage_error'])
                     mgcaes.update(metrics['grid4x4_cell_absolute_error'])
-                    
+
                 if vi == -1:
-                    
                     vis_results(self.exp_name,
                                 self.epoch,
                                 self.writer,
@@ -247,17 +252,16 @@ class Trainer:
         mses = AverageCategoryMeter(5)
         mgapes = AverageCategoryMeter(5)
         mgcaes = AverageCategoryMeter(5)
-        
-        #roi_mask = []
-        from datasets.WE.setting import cfg_data
-        #from scipy import io as sio
-        #for val_folder in cfg_data.VAL_FOLDER:
+
+        # roi_mask = []
+        # from scipy import io as sio
+        # for val_folder in cfg_data.VAL_FOLDER:
         #    roi_mask.append(sio.loadmat(os.path.join(cfg_data.DATA_PATH, 'test', val_folder + '_roi.mat'))['BW'])
 
         for i_sub, i_loader in enumerate(self.val_loader, 0):
 
             # mask = roi_mask[i_sub]
-            for vi, data in enumerate(i_loader, 0):
+            for vi, data, _ in enumerate(i_loader, 0):
                 img, gt_map = data
 
                 with torch.no_grad():
@@ -278,25 +282,25 @@ class Trainer:
                         gt_map = gt_map.data.numpy()
 
                     for i_img in range(pred_map.shape[0]):
-                        pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
-                        gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
+                        # pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
+                        # gt_count = np.sum(gt_map[i_img]) / self.cfg.LOG_PARA
 
-                        #losses.update(self.net.loss.item(), i_sub)
-                        #maes.update(abs(gt_count - pred_cnt), i_sub)
-                        
+                        # losses.update(self.net.loss.item(), i_sub)
+                        # maes.update(abs(gt_count - pred_cnt), i_sub)
+
                         losses.update(self.net.loss.item(), i_sub)
-                    
+
                         metric_grids = [(4, 4)]
                         metrics = get_metrics(pred_map[i_img].squeeze() / self.cfg.LOG_PARA,
-                                            gt_map[i_img] / self.cfg.LOG_PARA, 
-                                            metric_grids=metric_grids)
-                        
+                                              gt_map[i_img] / self.cfg.LOG_PARA,
+                                              metric_grids=metric_grids)
+
                         maes.update(metrics['absolute_error'], i_sub)
                         mapes.update(metrics['absolute_percentage_error'], i_sub)
                         mses.update(metrics['squared_error'], i_sub)
                         mgapes.update(metrics['grid4x4_absolute_percentage_error'], i_sub)
                         mgcaes.update(metrics['grid4x4_cell_absolute_error'], i_sub)
-                        
+
                     if vi == -1:
                         vis_results(self.exp_name,
                                     self.epoch,
@@ -305,8 +309,8 @@ class Trainer:
                                     img, pred_map,
                                     gt_map)
 
-        #mae = np.average(maes.avg)
-        #loss = np.average(losses.avg)
+        # mae = np.average(maes.avg)
+        # loss = np.average(losses.avg)
 
         mae = np.average(maes.avg)
         mape = np.average(mapes.avg)
@@ -315,13 +319,13 @@ class Trainer:
         mgape = np.average(mgapes.avg)
         mgcae = np.average(mgcaes.avg)
 
-        #self.writer.add_scalar('val_loss', loss, self.epoch + 1)
-        #self.writer.add_scalar('mae', mae, self.epoch + 1)
-        #self.writer.add_scalar('mae_s1', maes.avg[0], self.epoch + 1)
-        #self.writer.add_scalar('mae_s2', maes.avg[1], self.epoch + 1)
-        #self.writer.add_scalar('mae_s3', maes.avg[2], self.epoch + 1)
-        #self.writer.add_scalar('mae_s4', maes.avg[3], self.epoch + 1)
-        #self.writer.add_scalar('mae_s5', maes.avg[4], self.epoch + 1)
+        # self.writer.add_scalar('val_loss', loss, self.epoch + 1)
+        # self.writer.add_scalar('mae', mae, self.epoch + 1)
+        # self.writer.add_scalar('mae_s1', maes.avg[0], self.epoch + 1)
+        # self.writer.add_scalar('mae_s2', maes.avg[1], self.epoch + 1)
+        # self.writer.add_scalar('mae_s3', maes.avg[2], self.epoch + 1)
+        # self.writer.add_scalar('mae_s4', maes.avg[3], self.epoch + 1)
+        # self.writer.add_scalar('mae_s5', maes.avg[4], self.epoch + 1)
 
         self.writer.add_scalar('val_loss', loss, self.epoch + 1)
         self.writer.add_scalar('mae', mae, self.epoch + 1)
@@ -329,9 +333,17 @@ class Trainer:
         self.writer.add_scalar('rmse', mse, self.epoch + 1)
         self.writer.add_scalar('mgape', mgape, self.epoch + 1)
         self.writer.add_scalar('mgcae', mgcae, self.epoch + 1)
-        
-        #self.train_record = update_model(self.net, self.optimizer, self.scheduler, self.epoch, self.i_tb, self.exp_path,
-        #                                 self.exp_name,[mae, 0, 0, 0, 0, loss], self.train_record, self.log_txt)
+
+        # self.train_record = update_model(self.net,
+        #                                  self.optimizer,
+        #                                  self.scheduler,
+        #                                  self.epoch,
+        #                                  self.i_tb,
+        #                                  self.exp_path,
+        #                                  self.exp_name,
+        #                                  [mae, 0, 0, 0, 0, loss],
+        #                                  self.train_record,
+        #                                  self.log_txt)
 
         best_model = False
         best_metric = 'best_mae'
@@ -356,7 +368,7 @@ class Trainer:
 """
             self.writer.add_text("validation_table", table_validation, global_step=self.epoch + 1)
 
-        #print_WE_summary(self.log_txt, self.epoch, [mae, 0, 0, 0, 0, loss], self.train_record, maes)
+        # print_WE_summary(self.log_txt, self.epoch, [mae, 0, 0, 0, 0, loss], self.train_record, maes)
         print_summary(self.exp_name, [mae, mape, mse, mgape, mgcae, loss], self.train_record)
 
         return best_model
@@ -464,42 +476,42 @@ class Trainer:
                     pred_map = pred_map.data.numpy()
 
                 for i_img in range(pred_map.shape[0]):
-                    pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
-                    
-                    width = img.shape[3]
-                    height = img.shape[2]
+                    # pred_cnt = np.sum(pred_map[i_img]) / self.cfg.LOG_PARA
+                    #
+                    # width = img.shape[3]
+                    # height = img.shape[2]
                     ground_truth = [(point['x'].item(), point['y'].item()) for point in gt_points]
-                    metric_grids = [(4, 4)]                   
+                    metric_grids = [(4, 4)]
                     metrics = get_metrics_with_points(pred_map[i_img].squeeze() / self.cfg.LOG_PARA,
-                                          ground_truth, metric_grids=metric_grids)
+                                                      ground_truth, metric_grids=metric_grids)
 
                     maes.update(metrics['absolute_error'])
                     mapes.update(metrics['absolute_percentage_error'])
                     mses.update(metrics['squared_error'])
                     mgapes.update(metrics['grid4x4_absolute_percentage_error'])
                     mgcaes.update(metrics['grid4x4_cell_absolute_error'])
-                    
-                    #maes.update(abs(gt_count - pred_cnt))
-                    #if gt_count == 0.:
-                    #    ape = 100. * abs(gt_count - pred_cnt)
-                    #else:
-                    #    ape = 100. * abs(gt_count - pred_cnt) / gt_count
-                    #mapes.update(ape)
-                    #mses.update((gt_count - pred_cnt) * (gt_count - pred_cnt))
 
-                    #gape, gcae = get_grid_metrics_with_points(width, height,
+                    # maes.update(abs(gt_count - pred_cnt))
+                    # if gt_count == 0.:
+                    #    ape = 100. * abs(gt_count - pred_cnt)
+                    # else:
+                    #    ape = 100. * abs(gt_count - pred_cnt) / gt_count
+                    # mapes.update(ape)
+                    # mses.update((gt_count - pred_cnt) * (gt_count - pred_cnt))
+
+                    # gape, gcae = get_grid_metrics_with_points(width, height,
                     #                                          pred_map[i_img].squeeze() / self.cfg.LOG_PARA,
                     #                                          ground_truth,  # gt_count[i_img],
                     #                                          metric_grids[0],
                     #                                          debug=False)
-                    #mgapes.update(gape)
-                    #mgcaes.update(gcae)
-                    #print('AE:', metrics['absolute_error'], abs(pred_cnt - gt_count))
-                    #print('APE:', metrics['absolute_percentage_error'], ape)
-                    #print('SE:', metrics['squared_error'], ((gt_count - pred_cnt) * (gt_count - pred_cnt)))
-                    #print('GAPE:', metrics['grid4x4_absolute_percentage_error'], gape)
-                    #print('GCAE:', metrics['grid4x4_cell_absolute_error'], gcae)
-                    
+                    # mgapes.update(gape)
+                    # mgcaes.update(gcae)
+                    # print('AE:', metrics['absolute_error'], abs(pred_cnt - gt_count))
+                    # print('APE:', metrics['absolute_percentage_error'], ape)
+                    # print('SE:', metrics['squared_error'], ((gt_count - pred_cnt) * (gt_count - pred_cnt)))
+                    # print('GAPE:', metrics['grid4x4_absolute_percentage_error'], gape)
+                    # print('GCAE:', metrics['grid4x4_cell_absolute_error'], gcae)
+
         mae = maes.avg
         mape = mapes.avg
         mse = np.sqrt(mses.avg)
@@ -530,3 +542,10 @@ class Trainer:
         self.writer.add_text("validation_golden", table_golden, global_step=self.epoch + 1)
 
         print_summary(self.exp_name + "-Golden", [mae, mape, mse, mgape, mgcae, loss], self.train_record_golden)
+
+        if self.cfg.STORE_MODEL_AFTER_GOLDEN_INFERENCE:
+            filename = 'golden_ep_%d_mae_%.1f_mape_%.1f_rmse_%.1f_mgape_%.1f' % (
+                self.epoch + 1, tr['best_mae'], tr['best_mape'], tr['best_mse'], tr['best_mgape'])
+            filename += '.pth'
+            shutil.copyfile(os.path.join(self.exp_path, self.exp_name, 'best_state.pth'),
+                            os.path.join(self.exp_path, self.exp_name, filename))
