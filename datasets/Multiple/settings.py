@@ -1,6 +1,6 @@
 from easydict import EasyDict as edict
 
-from datasets.Multiple.loader import CustomCCLabeler, CustomSHH, CustomWE, CustomJHU
+from datasets.Multiple.loader import CustomCCLabeler, CustomSHH, CustomWE, CustomGCC, CustomJHU
 
 # init
 __C_DYN = edict()
@@ -10,7 +10,7 @@ cfg_data = __C_DYN
 __C_DYN.IMAGE_SIZE = None
 __C_DYN.TRAIN_SIZE = (576, 768)  # SHHB sizes (576, 768), WE raw sizes (576, 720) need padding, GCC (480, 848)
 __C_DYN.LIST_C_DATASETS = [
-    # (CustomGCC, '/workspace/data/GCC'),
+    #(CustomGCC, '/workspace/data/GCC'),
     (CustomSHH, '/workspace/data/shanghaiTech/part_A_final/'),
     (CustomSHH, '/workspace/data/shanghaiTech/part_B_final/'),
     (CustomWE, '/workspace/data/worldExpo10_blurred'),
@@ -64,6 +64,7 @@ __C_DYN.PATH_SETTINGS = {
     'BG__gt_path': '/workspace/home/jourdanfa/data/density_maps/background/',
     'GD__gt_path': '/workspace/home/jourdanfa/data/density_maps/cclabeler/',
     'JHU__gt_path': '/workspace/home/jourdanfa/data/density_maps/jhu_crowd_v2.0/',
+    'GCC__dataset_weight': 1,    
     'WE__dataset_weight': 1,
     'SHHA__dataset_weight': 1,
     'SHHB__dataset_weight': 1,
